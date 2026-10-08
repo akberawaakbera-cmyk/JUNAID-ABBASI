@@ -16,6 +16,7 @@
   --success: #35d49a;
   --danger: #ff5d6c;
   --warning: #ffbd5c;
+
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
   --radius: 18px;
 }
@@ -37,8 +38,17 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--bg);
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(108, 99, 255, 0.06),
+      transparent 35%
+    ),
+    var(--bg);
+
   color: var(--text);
+
   font-family:
     Inter,
     -apple-system,
@@ -83,6 +93,7 @@ select:focus-visible {
 .sidebar {
   width: 260px;
   min-height: 100vh;
+
   position: fixed;
   left: 0;
   top: 0;
@@ -100,7 +111,9 @@ select:focus-visible {
 }
 
 
-/* BRAND */
+/* =========================================================
+   BRAND
+   ========================================================= */
 
 .brand {
   display: flex;
@@ -118,20 +131,33 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
 
+  overflow: hidden;
+
   border-radius: 13px;
 
-  background: linear-gradient(
-    135deg,
-    var(--accent),
-    #9a7cff
-  );
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent),
+      #9a7cff
+    );
 
   color: white;
+
   font-size: 14px;
   font-weight: 900;
 
   box-shadow:
     0 8px 30px rgba(108, 99, 255, 0.25);
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
 }
 
 .brand h1 {
@@ -142,16 +168,20 @@ select:focus-visible {
 
 .brand span {
   display: block;
+
   margin-top: 4px;
 
   color: var(--muted);
+
   font-size: 9px;
   letter-spacing: 1.5px;
   font-weight: 700;
 }
 
 
-/* NAVIGATION */
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 .navigation {
   display: flex;
@@ -174,6 +204,7 @@ select:focus-visible {
   color: var(--muted);
 
   text-align: left;
+
   font-size: 13px;
   font-weight: 600;
 
@@ -185,18 +216,22 @@ select:focus-visible {
 
 .nav-item span {
   width: 20px;
+
   text-align: center;
+
   font-size: 16px;
 }
 
 .nav-item:hover {
   background: #111720;
   color: var(--text);
+
   transform: translateX(2px);
 }
 
 .nav-item.active {
   background: rgba(108, 99, 255, 0.13);
+
   color: #a8a3ff;
 
   box-shadow:
@@ -204,10 +239,13 @@ select:focus-visible {
 }
 
 
-/* SIDEBAR BOTTOM */
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
 
 .sidebar-bottom {
   margin-top: auto;
+
   padding: 15px 8px 3px;
 }
 
@@ -217,6 +255,7 @@ select:focus-visible {
   gap: 8px;
 
   color: var(--muted);
+
   font-size: 11px;
   font-weight: 600;
 }
@@ -226,6 +265,7 @@ select:focus-visible {
   height: 7px;
 
   border-radius: 50%;
+
   background: var(--success);
 
   box-shadow:
@@ -237,6 +277,7 @@ select:focus-visible {
   margin-top: 13px;
 
   color: #4f5968;
+
   font-size: 9px;
   letter-spacing: 1px;
 }
@@ -248,9 +289,11 @@ select:focus-visible {
 
 .main {
   width: calc(100% - 260px);
+
   min-height: 100vh;
 
   margin-left: 260px;
+
   padding: 30px 35px 60px;
 }
 
@@ -269,7 +312,9 @@ select:focus-visible {
 
 .topbar h2 {
   font-size: 24px;
+
   font-weight: 800;
+
   letter-spacing: -0.5px;
 }
 
@@ -277,15 +322,19 @@ select:focus-visible {
   margin-top: 5px;
 
   color: var(--muted);
+
   font-size: 12px;
 }
 
 
-/* PROFILE */
+/* =========================================================
+   PROFILE
+   ========================================================= */
 
 .profile {
   display: flex;
   align-items: center;
+
   gap: 11px;
 }
 
@@ -297,26 +346,42 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
 
+  overflow: hidden;
+
   border-radius: 12px;
 
   background: #171d27;
+
   border: 1px solid var(--border);
 
   color: #aaa5ff;
+
   font-size: 11px;
   font-weight: 800;
 }
 
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
 .profile strong {
   display: block;
+
   font-size: 12px;
 }
 
 .profile small {
   display: block;
+
   margin-top: 3px;
 
   color: var(--muted);
+
   font-size: 10px;
 }
 
@@ -346,11 +411,13 @@ select:focus-visible {
   justify-content: space-between;
 
   position: relative;
+
   overflow: hidden;
 
   padding: 35px;
 
   border: 1px solid var(--border);
+
   border-radius: 22px;
 
   background:
@@ -372,6 +439,7 @@ select:focus-visible {
   content: "";
 
   position: absolute;
+
   width: 230px;
   height: 230px;
 
@@ -387,7 +455,9 @@ select:focus-visible {
   color: #918cff;
 
   font-size: 10px;
+
   font-weight: 800;
+
   letter-spacing: 2px;
 }
 
@@ -395,7 +465,9 @@ select:focus-visible {
   margin-top: 12px;
 
   font-size: clamp(27px, 4vw, 42px);
+
   line-height: 1.05;
+
   letter-spacing: -1.5px;
 }
 
@@ -411,12 +483,14 @@ select:focus-visible {
   color: var(--muted);
 
   font-size: 12px;
+
   line-height: 1.7;
 }
 
 .welcome-badge {
   display: flex;
   align-items: center;
+
   gap: 9px;
 
   padding: 9px 13px;
@@ -424,12 +498,15 @@ select:focus-visible {
   border-radius: 30px;
 
   background: rgba(53, 212, 154, 0.08);
+
   border: 1px solid rgba(53, 212, 154, 0.15);
 
   color: var(--success);
 
   font-size: 9px;
+
   font-weight: 800;
+
   letter-spacing: 1px;
 }
 
@@ -438,6 +515,7 @@ select:focus-visible {
   height: 7px;
 
   border-radius: 50%;
+
   background: var(--success);
 
   box-shadow:
@@ -451,7 +529,9 @@ select:focus-visible {
 
 .stats {
   display: grid;
+
   grid-template-columns: repeat(4, 1fr);
+
   gap: 14px;
 
   margin-top: 18px;
@@ -461,6 +541,7 @@ select:focus-visible {
   padding: 19px;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -472,6 +553,7 @@ select:focus-visible {
 
 .stat-card:hover {
   transform: translateY(-3px);
+
   background: var(--card-hover);
 }
 
@@ -479,7 +561,9 @@ select:focus-visible {
   color: var(--muted);
 
   font-size: 9px;
+
   font-weight: 800;
+
   letter-spacing: 1.2px;
 }
 
@@ -497,6 +581,7 @@ select:focus-visible {
   margin-top: 5px;
 
   color: #586273;
+
   font-size: 10px;
 }
 
@@ -507,6 +592,7 @@ select:focus-visible {
 
 .section-header {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
@@ -521,6 +607,7 @@ select:focus-visible {
   margin-top: 4px;
 
   color: var(--muted);
+
   font-size: 11px;
 }
 
@@ -535,9 +622,11 @@ select:focus-visible {
   border-radius: 10px;
 
   background: var(--accent);
+
   color: white;
 
   font-size: 11px;
+
   font-weight: 700;
 
   transition:
@@ -547,6 +636,7 @@ select:focus-visible {
 
 .primary-button:hover {
   filter: brightness(1.12);
+
   transform: translateY(-1px);
 }
 
@@ -574,6 +664,7 @@ select:focus-visible {
   padding: 20px;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -588,6 +679,7 @@ select:focus-visible {
   transform: translateY(-3px);
 
   border-color: #303a4b;
+
   background: var(--card-hover);
 }
 
@@ -608,6 +700,7 @@ select:focus-visible {
   color: #9b96ff;
 
   font-size: 11px;
+
   font-weight: 900;
 }
 
@@ -623,6 +716,7 @@ select:focus-visible {
   color: var(--muted);
 
   font-size: 10px;
+
   line-height: 1.6;
 }
 
@@ -642,6 +736,7 @@ select:focus-visible {
   color: #c9cfda;
 
   font-size: 10px;
+
   font-weight: 700;
 }
 
@@ -671,6 +766,7 @@ select:focus-visible {
   height: 15px;
 
   position: absolute;
+
   top: 3px;
   left: 3px;
 
@@ -689,8 +785,11 @@ select:focus-visible {
 
 .switch-row input:checked + i::after {
   transform: translateX(17px);
+
   background: var(--accent-2);
-  box-shadow: 0 0 12px rgba(108, 99, 255, 0.5);
+
+  box-shadow:
+    0 0 12px rgba(108, 99, 255, 0.5);
 }
 
 
@@ -711,6 +810,7 @@ select:focus-visible {
   padding: 23px;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -733,6 +833,7 @@ select:focus-visible {
   color: #aaa5ff;
 
   font-size: 10px;
+
   font-weight: 900;
 }
 
@@ -746,6 +847,7 @@ select:focus-visible {
   color: var(--muted);
 
   font-size: 10px;
+
   line-height: 1.6;
 }
 
@@ -762,12 +864,15 @@ select:focus-visible {
   width: 100%;
 
   margin-top: 15px;
+
   padding: 11px 12px;
 
   border: 1px solid var(--border);
+
   border-radius: 10px;
 
   background: #0b1017;
+
   color: var(--text);
 
   font-size: 11px;
@@ -788,12 +893,15 @@ select:focus-visible {
   border-radius: 8px;
 
   background: rgba(255, 189, 92, 0.08);
+
   border: 1px solid rgba(255, 189, 92, 0.15);
 
   color: var(--warning);
 
   font-size: 9px;
+
   font-weight: 800;
+
   letter-spacing: 1px;
 }
 
@@ -810,6 +918,7 @@ select:focus-visible {
   padding: 22px;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -819,6 +928,7 @@ select:focus-visible {
   color: #5d6776;
 
   font-size: 10px;
+
   font-weight: 800;
 }
 
@@ -834,6 +944,7 @@ select:focus-visible {
   color: var(--muted);
 
   font-size: 10px;
+
   line-height: 1.6;
 }
 
@@ -845,6 +956,7 @@ select:focus-visible {
   border-radius: 8px;
 
   background: #171d27;
+
   border: 1px solid var(--border);
 
   color: #b7beca;
@@ -854,6 +966,7 @@ select:focus-visible {
 
 .admin-card button:hover {
   background: #202835;
+
   color: white;
 }
 
@@ -866,6 +979,7 @@ select:focus-visible {
   overflow: hidden;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -877,6 +991,7 @@ select:focus-visible {
   grid-template-columns: 60px 80px 1fr;
 
   align-items: center;
+
   gap: 12px;
 
   padding: 15px 18px;
@@ -898,6 +1013,7 @@ select:focus-visible {
 
 .log-success {
   color: var(--success);
+
   font-weight: 800;
 }
 
@@ -912,6 +1028,7 @@ select:focus-visible {
   padding: 24px;
 
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
 
   background: var(--card);
@@ -931,6 +1048,7 @@ select:focus-visible {
   color: #adb5c2;
 
   font-size: 10px;
+
   font-weight: 700;
 }
 
@@ -940,12 +1058,478 @@ select:focus-visible {
   padding: 12px;
 
   border: 1px solid var(--border);
+
   border-radius: 10px;
 
   background: #0b1017;
+
   color: white;
 
   font-size: 11px;
+}
+
+
+/* =========================================================
+   SPLASH SCREEN
+   ========================================================= */
+
+.splash-screen {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(108, 99, 255, 0.18),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 50% 80%,
+      rgba(139, 133, 255, 0.08),
+      transparent 35%
+    ),
+    #05070b;
+
+  opacity: 1;
+
+  visibility: visible;
+
+  transition:
+    opacity 0.65s ease,
+    visibility 0.65s ease;
+}
+
+.splash-screen.hide {
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+}
+
+.splash-screen::before {
+  content: "";
+
+  position: absolute;
+
+  width: 520px;
+  height: 520px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(108, 99, 255, 0.08);
+
+  animation: splashRotate 12s linear infinite;
+}
+
+.splash-screen::after {
+  content: "";
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(139, 133, 255, 0.08);
+
+  animation: splashRotateReverse 9s linear infinite;
+}
+
+
+/* SPLASH CONTENT */
+
+.splash-content {
+  width: min(90%, 430px);
+
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  text-align: center;
+
+  animation: splashContentIn 0.9s ease both;
+}
+
+
+/* SPLASH LOGO */
+
+.splash-logo {
+  width: 125px;
+  height: 125px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  position: relative;
+
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6c63ff,
+      #9a7cff
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  box-shadow:
+    0 0 0 8px rgba(108, 99, 255, 0.05),
+    0 0 60px rgba(108, 99, 255, 0.25),
+    0 25px 80px rgba(0, 0, 0, 0.55);
+
+  animation: splashLogo 2.8s ease-in-out infinite;
+}
+
+.splash-logo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.splash-logo span {
+  color: white;
+
+  font-size: 30px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+
+/* SPLASH BRAND */
+
+.splash-title {
+  margin-top: 28px;
+
+  font-size: 28px;
+
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.splash-subtitle {
+  margin-top: 10px;
+
+  color: #a8a3ff;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.splash-created {
+  margin-top: 13px;
+
+  color: #8b95a5;
+
+  font-size: 11px;
+
+  letter-spacing: 0.5px;
+}
+
+.splash-developer {
+  margin-top: 8px;
+
+  color: #636d7d;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.splash-developer strong {
+  color: #aaa5ff;
+}
+
+
+/* SPLASH LOADER */
+
+.splash-loader {
+  width: 190px;
+  height: 3px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  margin-top: 30px;
+
+  border-radius: 10px;
+
+  background: #171d27;
+}
+
+.splash-loader::after {
+  content: "";
+
+  width: 70px;
+  height: 100%;
+
+  position: absolute;
+
+  left: -70px;
+  top: 0;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #8b85ff,
+      transparent
+    );
+
+  animation: splashLoader 1.4s ease-in-out infinite;
+}
+
+.splash-loading-text {
+  margin-top: 12px;
+
+  color: #4f5968;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   DEVELOPER LOGO SELECTOR
+   ========================================================= */
+
+.logo-selector {
+  margin-top: 18px;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  background: #0b1017;
+}
+
+.logo-selector-title {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 13px;
+}
+
+.logo-selector-title strong {
+  color: #dce1ea;
+
+  font-size: 11px;
+}
+
+.logo-selector-badge {
+  padding: 5px 8px;
+
+  border-radius: 7px;
+
+  background: rgba(108, 99, 255, 0.1);
+
+  border: 1px solid rgba(108, 99, 255, 0.16);
+
+  color: #a8a3ff;
+
+  font-size: 7px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+.logo-preview {
+  width: 85px;
+  height: 85px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  margin-bottom: 14px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #151b26,
+      #0c1118
+    );
+
+  border: 1px solid var(--border);
+
+  color: #aaa5ff;
+
+  font-size: 20px;
+
+  font-weight: 900;
+}
+
+.logo-preview img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.logo-file {
+  width: 100%;
+
+  padding: 9px;
+
+  border: 1px dashed #30394a;
+
+  border-radius: 10px;
+
+  background: #080c12;
+
+  color: #8993a3;
+
+  font-size: 9px;
+
+  cursor: pointer;
+}
+
+.logo-file:hover {
+  border-color: var(--accent);
+
+  color: #aaa5ff;
+}
+
+.logo-selector-note {
+  margin-top: 9px;
+
+  color: #596474;
+
+  font-size: 8px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes splashContentIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(18px)
+      scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+@keyframes splashLogo {
+  0%,
+  100% {
+    transform: translateY(0);
+
+    box-shadow:
+      0 0 0 8px rgba(108, 99, 255, 0.05),
+      0 0 60px rgba(108, 99, 255, 0.25),
+      0 25px 80px rgba(0, 0, 0, 0.55);
+  }
+
+  50% {
+    transform: translateY(-7px);
+
+    box-shadow:
+      0 0 0 12px rgba(108, 99, 255, 0.04),
+      0 0 80px rgba(108, 99, 255, 0.35),
+      0 30px 90px rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes splashLoader {
+  0% {
+    left: -70px;
+  }
+
+  100% {
+    left: 190px;
+  }
+}
+
+@keyframes splashRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes splashRotateReverse {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
 }
 
 
@@ -961,6 +1545,7 @@ select:focus-visible {
 
   .main {
     width: calc(100% - 220px);
+
     margin-left: 220px;
 
     padding: 25px;
@@ -981,11 +1566,13 @@ select:focus-visible {
 
   .sidebar {
     width: 68px;
+
     padding: 20px 10px;
   }
 
   .brand {
     justify-content: center;
+
     padding: 5px 0 25px;
   }
 
@@ -1000,11 +1587,13 @@ select:focus-visible {
 
   .nav-item {
     justify-content: center;
+
     padding: 13px 8px;
   }
 
   .nav-item span {
     width: auto;
+
     font-size: 17px;
   }
 
@@ -1018,6 +1607,7 @@ select:focus-visible {
 
   .main {
     width: calc(100% - 68px);
+
     margin-left: 68px;
 
     padding: 20px 15px 40px;
@@ -1041,7 +1631,9 @@ select:focus-visible {
     padding: 25px;
 
     align-items: flex-start;
+
     flex-direction: column;
+
     gap: 22px;
   }
 
@@ -1055,6 +1647,7 @@ select:focus-visible {
 
   .stats {
     grid-template-columns: 1fr 1fr;
+
     gap: 10px;
   }
 
@@ -1068,6 +1661,7 @@ select:focus-visible {
 
   .section-header {
     align-items: flex-start;
+
     gap: 12px;
   }
 
@@ -1079,9 +1673,48 @@ select:focus-visible {
 
   .log-item {
     grid-template-columns: 45px 65px 1fr;
+
     gap: 8px;
 
     padding: 13px;
+  }
+
+
+  /* MOBILE SPLASH */
+
+  .splash-logo {
+    width: 105px;
+    height: 105px;
+
+    border-radius: 27px;
+  }
+
+  .splash-logo span {
+    font-size: 26px;
+  }
+
+  .splash-title {
+    margin-top: 24px;
+
+    font-size: 22px;
+
+    letter-spacing: 1.5px;
+  }
+
+  .splash-subtitle {
+    font-size: 10px;
+  }
+
+  .splash-created {
+    font-size: 10px;
+  }
+
+  .splash-developer {
+    font-size: 9px;
+  }
+
+  .splash-loader {
+    width: 160px;
   }
 
 }
@@ -1111,6 +1744,42 @@ select:focus-visible {
     padding: 18px;
   }
 
+
+  /* SMALL SPLASH */
+
+  .splash-logo {
+    width: 92px;
+    height: 92px;
+
+    border-radius: 24px;
+  }
+
+  .splash-logo span {
+    font-size: 23px;
+  }
+
+  .splash-title {
+    font-size: 19px;
+
+    letter-spacing: 1px;
+  }
+
+  .splash-subtitle {
+    font-size: 9px;
+  }
+
+  .splash-created {
+    font-size: 9px;
+  }
+
+  .splash-developer {
+    font-size: 8px;
+  }
+
+  .splash-loader {
+    width: 145px;
+  }
+
 }
 
 
@@ -1124,7 +1793,12 @@ select:focus-visible {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+
     transition: none !important;
+
+    animation-duration: 0.01ms !important;
+
+    animation-iteration-count: 1 !important;
   }
 
 }
