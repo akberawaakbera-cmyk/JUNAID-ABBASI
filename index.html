@@ -2,26 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b14">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#090d18">
+
   <title>JUNAID ABBASI — Control Panel</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
   <!-- SPLASH SCREEN -->
-  <div class="splash-screen" id="splashScreen">
+
+  <section id="splashScreen" class="splash-screen">
     <div class="splash-content">
 
-      <div class="splash-logo" id="splashLogo">
-        <span class="logo-fallback">JA</span>
-        <img class="custom-logo-image" alt="Panel Logo" hidden>
+      <div id="splashLogo" class="splash-logo">
+        <span>JA</span>
       </div>
 
-      <h1 class="splash-title">JUNAID ABBASI</h1>
+      <div class="splash-title">JUNAID ABBASI</div>
 
-      <p class="splash-subtitle">CONTROL PANEL</p>
+      <div class="splash-subtitle">CONTROL PANEL</div>
 
       <p class="splash-created">
         Specially Created for Junaid Abbasi
@@ -35,393 +41,871 @@
         <span></span>
       </div>
 
-      <p class="splash-loading-text">Initializing Panel...</p>
+      <p class="splash-loading-text">INITIALIZING APPLICATION</p>
+
+      <button id="enterApp" class="enter-app-button">
+        ENTER APPLICATION
+      </button>
 
     </div>
-  </div>
+  </section>
 
 
   <!-- APPLICATION -->
-  <div class="app">
+
+  <div id="app" class="app-shell">
+
+    <!-- MOBILE OVERLAY -->
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+
+    <aside id="sidebar" class="sidebar">
 
       <div class="brand">
-        <div class="brand-logo" id="brandLogo">
-          <span class="logo-fallback">JA</span>
-          <img class="custom-logo-image" alt="Panel Logo" hidden>
-        </div>
+        <div id="sidebarLogo" class="brand-logo">JA</div>
 
         <div class="brand-text">
-          <h2>JUNAID ABBASI</h2>
+          <strong>JUNAID ABBASI</strong>
           <span>CONTROL PANEL</span>
         </div>
+
+        <button
+          id="closeSidebar"
+          class="icon-button mobile-close"
+          aria-label="Close navigation"
+        >×</button>
       </div>
+
+
+      <div class="sidebar-section-label">WORKSPACE</div>
 
       <nav class="navigation">
 
         <button class="nav-item active" data-page="dashboard">
-          <span>▦</span>
+          <span class="nav-icon">⌂</span>
           <span>Dashboard</span>
         </button>
 
         <button class="nav-item" data-page="controls">
-          <span>◈</span>
-          <span>Controls</span>
+          <span class="nav-icon">◈</span>
+          <span>Control Center</span>
         </button>
 
+      </nav>
+
+
+      <div class="sidebar-section-label">MANAGEMENT</div>
+
+      <nav class="navigation">
+
         <button class="nav-item" data-page="developer">
-          <span>⚙</span>
+          <span class="nav-icon">⌘</span>
           <span>Developer</span>
+          <span class="nav-tag">DEV</span>
         </button>
 
         <button class="nav-item" data-page="admin">
-          <span>♙</span>
+          <span class="nav-icon">♙</span>
           <span>Admin</span>
         </button>
 
         <button class="nav-item" data-page="logs">
-          <span>≡</span>
+          <span class="nav-icon">≡</span>
           <span>Activity Logs</span>
         </button>
 
         <button class="nav-item" data-page="settings">
-          <span>⚒</span>
+          <span class="nav-icon">⚙</span>
           <span>Settings</span>
         </button>
 
       </nav>
 
-      <div class="sidebar-footer">
-        <div class="profile-avatar" id="profileAvatar">
-          <span class="logo-fallback">JA</span>
-          <img class="custom-logo-image" alt="Panel Logo" hidden>
+
+      <div class="sidebar-bottom">
+
+        <div class="connection-indicator">
+          <span class="status-dot"></span>
+
+          <div>
+            <strong>Interface Online</strong>
+            <small>Local demonstration mode</small>
+          </div>
         </div>
 
-        <div>
-          <strong>JUNAID ABBASI</strong>
-          <small>Developer: LAWANGEN</small>
+        <div class="sidebar-footer">
+          <span>JUNAID ABBASI</span>
+          <span>v1.0.0</span>
         </div>
+
       </div>
 
     </aside>
 
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <!-- MAIN AREA -->
+
+    <main class="main-area">
 
       <!-- TOPBAR -->
+
       <header class="topbar">
 
-        <div>
-          <h1 id="pageTitle">Dashboard</h1>
-          <p id="pageDescription">
-            JUNAID ABBASI application control center
-          </p>
+        <div class="topbar-left">
+
+          <button
+            id="menuButton"
+            class="icon-button menu-button"
+            aria-label="Open navigation"
+          >☰</button>
+
+          <div>
+            <h1 id="pageTitle">Dashboard</h1>
+            <p id="pageDescription">
+              Your application overview
+            </p>
+          </div>
+
         </div>
 
-        <div class="topbar-profile">
-          <span class="online-indicator"></span>
-          <span>Panel Online</span>
+
+        <div class="topbar-right">
+
+          <div class="topbar-status">
+            <span class="status-dot"></span>
+            <span>ONLINE</span>
+          </div>
+
+          <div id="profileAvatar" class="profile-avatar">JA</div>
+
         </div>
 
       </header>
 
 
-      <!-- DASHBOARD -->
-      <section class="page active" id="dashboard">
+      <!-- PAGE CONTENT -->
 
-        <div class="welcome-card">
-          <div>
-            <span class="eyebrow">WELCOME BACK</span>
-
-            <h2>JUNAID ABBASI</h2>
-
-            <p>
-              Specially Created for Junaid Abbasi
-            </p>
-
-            <p class="developer-label">
-              Developer: LAWANGEN
-            </p>
-          </div>
-
-          <div class="welcome-badge">JA</div>
-        </div>
+      <div class="page-container">
 
 
-        <div class="stats-grid">
+        <!-- DASHBOARD -->
 
-          <div class="stat-card">
-            <span>Total Controls</span>
-            <strong id="totalControls">8</strong>
-            <small>Available UI controls</small>
-          </div>
+        <section id="dashboard" class="page active">
 
-          <div class="stat-card">
-            <span>Enabled Controls</span>
-            <strong id="controlCount">0</strong>
-            <small>Demo state only</small>
-          </div>
+          <div class="welcome-card">
 
-          <div class="stat-card">
-            <span>Developer</span>
-            <strong class="developer-stat">LAWANGEN</strong>
-            <small>Panel configuration</small>
-          </div>
+            <div class="welcome-content">
 
-        </div>
+              <span class="eyebrow">CONTROL CENTER</span>
 
+              <h2>Welcome back, Junaid.</h2>
 
-        <div class="section-heading">
-          <div>
-            <h2>Quick Controls</h2>
-            <p>Interface demonstration settings</p>
-          </div>
+              <p>
+                Manage your panel interface, review activity,
+                and customize application settings.
+              </p>
 
-          <button class="secondary-button" data-open-page="controls">
-            View All
-          </button>
-        </div>
+              <button
+                class="primary-button"
+                data-go-page="controls"
+              >
+                Open Control Center <span>→</span>
+              </button>
 
-        <div class="controls-grid" id="quickControls"></div>
-
-      </section>
-
-
-      <!-- CONTROLS -->
-      <section class="page" id="controls">
-
-        <div class="section-heading">
-          <div>
-            <h2>Control Center</h2>
-            <p>These switches only change the panel demo state.</p>
-          </div>
-
-          <button class="danger-button" id="disableAll">
-            Disable All
-          </button>
-        </div>
-
-        <div class="controls-grid" id="allControls"></div>
-
-      </section>
-
-
-      <!-- DEVELOPER -->
-      <section class="page" id="developer">
-
-        <div class="section-heading">
-          <div>
-            <h2>Developer Controller</h2>
-            <p>Developer configuration and branding</p>
-          </div>
-        </div>
-
-
-        <!-- DEVELOPER LOGO SELECTOR -->
-        <div class="logo-selector">
-
-          <div class="logo-selector-title">
-            <div>
-              <h3>Panel Logo</h3>
-              <p>Change the logo displayed on the splash screen and panel.</p>
             </div>
 
-            <span class="logo-selector-badge">DEVELOPER</span>
+            <div class="welcome-decoration">
+              <div class="decoration-ring ring-one"></div>
+              <div class="decoration-ring ring-two"></div>
+              <div class="decoration-core">JA</div>
+            </div>
+
           </div>
 
 
-          <div class="logo-preview" id="logoPreview">
-            <span class="logo-fallback">JA</span>
-            <img class="custom-logo-image" alt="Logo Preview" hidden>
+          <div class="section-heading">
+            <div>
+              <h2>Overview</h2>
+              <p>Your current interface status</p>
+            </div>
           </div>
 
 
-          <label for="logoUpload">Select a logo image</label>
+          <div class="stats-grid">
 
-          <input
-            type="file"
-            id="logoUpload"
-            class="logo-file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-          >
+            <article class="stat-card">
+              <div class="stat-top">
+                <span>Total Controls</span>
+                <span class="stat-icon">◈</span>
+              </div>
 
-          <div class="logo-selector-actions">
-            <button type="button" class="secondary-button" id="resetLogo">
-              Reset Logo
+              <strong id="totalControls">8</strong>
+
+              <small>Available demo controls</small>
+            </article>
+
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span>Enabled Controls</span>
+                <span class="stat-icon">✓</span>
+              </div>
+
+              <strong id="controlCount">0</strong>
+
+              <small>Current interface state</small>
+            </article>
+
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span>Activity Events</span>
+                <span class="stat-icon">≡</span>
+              </div>
+
+              <strong id="activityCount">0</strong>
+
+              <small>Recorded this session</small>
+            </article>
+
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span>Application</span>
+                <span class="stat-icon">●</span>
+              </div>
+
+              <strong class="stat-text">ONLINE</strong>
+
+              <small>Interface ready</small>
+            </article>
+
+          </div>
+
+
+          <div class="dashboard-grid">
+
+            <article class="panel-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Quick Actions</h3>
+                  <p>Navigate to a workspace</p>
+                </div>
+              </div>
+
+              <div class="quick-actions">
+
+                <button class="quick-action" data-go-page="controls">
+                  <span class="quick-action-icon">◈</span>
+                  <span>
+                    <strong>Control Center</strong>
+                    <small>View available controls</small>
+                  </span>
+                  <span class="action-arrow">→</span>
+                </button>
+
+                <button class="quick-action" data-go-page="developer">
+                  <span class="quick-action-icon">⌘</span>
+                  <span>
+                    <strong>Developer Settings</strong>
+                    <small>Customize panel branding</small>
+                  </span>
+                  <span class="action-arrow">→</span>
+                </button>
+
+                <button class="quick-action" data-go-page="logs">
+                  <span class="quick-action-icon">≡</span>
+                  <span>
+                    <strong>Activity Logs</strong>
+                    <small>Review recent events</small>
+                  </span>
+                  <span class="action-arrow">→</span>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <article class="panel-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Application Information</h3>
+                  <p>Panel details</p>
+                </div>
+              </div>
+
+              <div class="information-list">
+
+                <div>
+                  <span>Panel Name</span>
+                  <strong id="overviewPanelName">JUNAID ABBASI</strong>
+                </div>
+
+                <div>
+                  <span>Developer</span>
+                  <strong>LAWANGEN</strong>
+                </div>
+
+                <div>
+                  <span>Version</span>
+                  <strong id="overviewVersion">1.0.0</strong>
+                </div>
+
+                <div>
+                  <span>Storage</span>
+                  <strong>Browser Local</strong>
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <article class="panel-card recent-activity-card">
+
+            <div class="card-heading">
+
+              <div>
+                <h3>Recent Activity</h3>
+                <p>Your latest interface events</p>
+              </div>
+
+              <button class="text-button" data-go-page="logs">
+                View all →
+              </button>
+
+            </div>
+
+            <div id="recentLogs" class="recent-logs">
+              <div class="empty-state">No activity yet.</div>
+            </div>
+
+          </article>
+
+        </section>
+
+
+
+        <!-- CONTROL CENTER -->
+
+        <section id="controls" class="page">
+
+          <div class="page-intro-card">
+
+            <div>
+              <span class="eyebrow">WORKSPACE / CONTROLS</span>
+              <h2>Control Center</h2>
+
+              <p>
+                Manage the visual state of the available
+                demonstration controls.
+              </p>
+            </div>
+
+            <button id="disableAll" class="secondary-button">
+              Disable All
             </button>
-          </div>
 
-          <p class="logo-selector-note" id="logoStatus" aria-live="polite">
-            No custom logo selected. The default JA logo is being used.
-          </p>
-
-          <p class="logo-selector-note">
-            The selected image is saved in this browser. Clearing browser
-            storage may remove it. This static interface does not provide
-            server-side access control.
-          </p>
-
-        </div>
-
-
-        <!-- DEVELOPER SETTINGS -->
-        <div class="settings-grid">
-
-          <div class="settings-card">
-            <h3>Developer Mode</h3>
-            <p>Enable the local developer demo mode.</p>
-
-            <label class="switch-row">
-              <span class="status-label">Disabled</span>
-              <input type="checkbox" id="developerMode">
-              <i></i>
-            </label>
           </div>
 
 
-          <div class="settings-card">
-            <h3>API Environment</h3>
-            <p>Choose a display-only environment.</p>
+          <div class="notice-card">
+            <span class="notice-icon">ⓘ</span>
 
-            <select id="apiEnvironment" class="select">
-              <option value="Development">Development</option>
-              <option value="Testing">Testing</option>
-              <option value="Production">Production</option>
-            </select>
+            <p>
+              These switches control the panel interface only.
+              They do not interact with games or modify other applications.
+            </p>
           </div>
 
 
-          <div class="settings-card">
-            <h3>Debug Logging</h3>
-            <p>Toggle demo logging display preference.</p>
+          <div class="section-heading">
+            <div>
+              <h2>Available Controls</h2>
+              <p>Each option has its own interface card</p>
+            </div>
 
-            <label class="switch-row">
-              <span class="status-label">Disabled</span>
-              <input type="checkbox" id="debugLogging">
-              <i></i>
-            </label>
+            <span id="controlsSummary" class="summary-badge">
+              0 / 8 enabled
+            </span>
           </div>
 
-        </div>
 
-      </section>
+          <div id="allControls" class="controls-grid"></div>
+
+        </section>
 
 
-      <!-- ADMIN -->
-      <section class="page" id="admin">
 
-        <div class="section-heading">
-          <div>
-            <h2>Admin Controller</h2>
-            <p>Administrative interface demonstration</p>
-          </div>
-        </div>
+        <!-- DEVELOPER -->
 
-        <div class="admin-grid">
+        <section id="developer" class="page">
 
-          <div class="admin-card">
-            <h3>User Management</h3>
-            <p>Demo user-management module.</p>
-            <button class="secondary-button">Open Module</button>
-          </div>
+          <div class="page-intro-card">
 
-          <div class="admin-card">
-            <h3>Access Control</h3>
-            <p>Demo access-control module.</p>
-            <button class="secondary-button">Open Module</button>
+            <div>
+              <span class="eyebrow">MANAGEMENT / DEVELOPER</span>
+              <h2>Developer Workspace</h2>
+
+              <p>
+                Customize the appearance and local preferences
+                of this panel.
+              </p>
+            </div>
+
+            <span class="role-badge">DEVELOPER</span>
+
           </div>
 
-          <div class="admin-card">
-            <h3>System Logs</h3>
-            <p>Demo system-log module.</p>
-            <button class="secondary-button">Open Module</button>
+
+          <div class="developer-grid">
+
+            <!-- BRANDING -->
+
+            <article class="panel-card developer-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Panel Branding</h3>
+                  <p>Application identity</p>
+                </div>
+
+                <span class="card-heading-icon">✦</span>
+              </div>
+
+
+              <div class="branding-preview">
+
+                <div id="developerLogoPreview" class="logo-preview">
+                  JA
+                </div>
+
+                <div>
+                  <strong>JUNAID ABBASI</strong>
+                  <span>CONTROL PANEL</span>
+                </div>
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="developerLogoUpload">
+                  Application Logo
+                </label>
+
+                <input
+                  id="developerLogoUpload"
+                  class="file-input"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                >
+
+                <small>
+                  Choose an image to replace the panel logo.
+                  Recommended: square PNG or WEBP.
+                </small>
+
+              </div>
+
+
+              <div class="button-row">
+
+                <button
+                  id="resetLogo"
+                  class="secondary-button"
+                  type="button"
+                >
+                  Restore Default Logo
+                </button>
+
+              </div>
+
+
+              <p id="logoStatus" class="form-status" aria-live="polite">
+                Default logo is active.
+              </p>
+
+            </article>
+
+
+            <!-- DEVELOPER PREFERENCES -->
+
+            <article class="panel-card developer-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Developer Preferences</h3>
+                  <p>Local interface configuration</p>
+                </div>
+
+                <span class="card-heading-icon">⚙</span>
+              </div>
+
+
+              <label class="setting-row">
+
+                <span>
+                  <strong>Developer Mode</strong>
+                  <small>Enable developer indicators in this interface</small>
+                </span>
+
+                <span class="switch">
+                  <input id="developerMode" type="checkbox">
+                  <span class="switch-track"></span>
+                </span>
+
+              </label>
+
+
+              <div class="form-group">
+                <label for="apiEnvironment">Environment Label</label>
+
+                <select id="apiEnvironment" class="form-input">
+                  <option value="local">Local Demo</option>
+                  <option value="development">Development</option>
+                  <option value="production">Production Label</option>
+                </select>
+              </div>
+
+
+              <label class="setting-row">
+
+                <span>
+                  <strong>Debug Logging</strong>
+                  <small>Record additional UI events</small>
+                </span>
+
+                <span class="switch">
+                  <input id="debugLogging" type="checkbox" checked>
+                  <span class="switch-track"></span>
+                </span>
+
+              </label>
+
+
+              <button id="saveDeveloperSettings" class="primary-button">
+                Save Developer Settings
+              </button>
+
+            </article>
+
+
+            <!-- BRAND DETAILS -->
+
+            <article class="panel-card developer-card full-width-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Brand Information</h3>
+                  <p>Information displayed in the application</p>
+                </div>
+              </div>
+
+
+              <div class="brand-information-grid">
+
+                <div class="brand-information-item">
+                  <span>Application Name</span>
+                  <strong>JUNAID ABBASI</strong>
+                </div>
+
+                <div class="brand-information-item">
+                  <span>Project Developer</span>
+                  <strong>LAWANGEN</strong>
+                </div>
+
+                <div class="brand-information-item">
+                  <span>Created For</span>
+                  <strong>Junaid Abbasi</strong>
+                </div>
+
+                <div class="brand-information-item">
+                  <span>Interface Type</span>
+                  <strong>Web Application Demo</strong>
+                </div>
+
+              </div>
+
+            </article>
+
           </div>
 
-          <div class="admin-card">
-            <h3>System Settings</h3>
-            <p>Demo administrative settings.</p>
-            <button class="secondary-button">Open Module</button>
+
+          <div class="notice-card">
+            <span class="notice-icon">ⓘ</span>
+
+            <p>
+              This is a static browser application. Hiding the logo selector
+              on other pages is a UI arrangement, not secure authentication.
+              Real developer-only permissions require server-side access control.
+            </p>
           </div>
 
-        </div>
-
-      </section>
+        </section>
 
 
-      <!-- ACTIVITY LOGS -->
-      <section class="page" id="logs">
 
-        <div class="section-heading">
-          <div>
-            <h2>Activity Logs</h2>
-            <p>Recent events in this browser session</p>
+        <!-- ADMIN -->
+
+        <section id="admin" class="page">
+
+          <div class="page-intro-card">
+
+            <div>
+              <span class="eyebrow">MANAGEMENT / ADMIN</span>
+              <h2>Admin Workspace</h2>
+
+              <p>
+                Administrative interface modules and panel information.
+              </p>
+            </div>
+
+            <span class="role-badge">ADMIN</span>
+
           </div>
 
-          <button class="secondary-button" id="clearLogs">
-            Clear Logs
-          </button>
-        </div>
 
-        <div class="logs-container" id="logsContainer"></div>
+          <div class="admin-grid">
 
-      </section>
+            <article class="panel-card admin-card">
+              <div class="admin-card-icon">♙</div>
+              <h3>User Management</h3>
+              <p>Demo module for viewing user-management options.</p>
+              <button class="secondary-button" data-admin-action="User Management">
+                Open Module
+              </button>
+            </article>
 
 
-      <!-- SETTINGS -->
-      <section class="page" id="settings">
+            <article class="panel-card admin-card">
+              <div class="admin-card-icon">◈</div>
+              <h3>Access Control</h3>
+              <p>Demo module for reviewing interface access settings.</p>
+              <button class="secondary-button" data-admin-action="Access Control">
+                Open Module
+              </button>
+            </article>
 
-        <div class="section-heading">
-          <div>
-            <h2>Panel Settings</h2>
-            <p>Customize your panel display</p>
+
+            <article class="panel-card admin-card">
+              <div class="admin-card-icon">≡</div>
+              <h3>System Logs</h3>
+              <p>Review the events recorded during this session.</p>
+              <button class="secondary-button" data-go-page="logs">
+                View Activity
+              </button>
+            </article>
+
+
+            <article class="panel-card admin-card">
+              <div class="admin-card-icon">⚙</div>
+              <h3>System Settings</h3>
+              <p>Open general panel appearance and preferences.</p>
+              <button class="secondary-button" data-go-page="settings">
+                Open Settings
+              </button>
+            </article>
+
           </div>
-        </div>
+
+        </section>
 
 
-        <div class="settings-form">
 
-          <label for="panelName">Panel Name</label>
-          <input
-            type="text"
-            id="panelName"
-            value="JUNAID ABBASI"
-            maxlength="60"
-          >
+        <!-- ACTIVITY LOGS -->
 
-          <label for="panelVersion">Panel Version</label>
-          <input
-            type="text"
-            id="panelVersion"
-            value="1.0.0"
-            maxlength="20"
-          >
+        <section id="logs" class="page">
 
-          <label for="themeSelect">Theme</label>
-          <select id="themeSelect" class="select">
-            <option value="Dark">Dark</option>
-            <option value="Light">Light</option>
-          </select>
+          <div class="page-intro-card">
 
-          <button class="primary-button" id="saveSettings">
-            Save Settings
-          </button>
+            <div>
+              <span class="eyebrow">SYSTEM / ACTIVITY</span>
+              <h2>Activity Logs</h2>
 
-        </div>
+              <p>
+                Review recent actions recorded by the interface.
+              </p>
+            </div>
 
-      </section>
+            <button id="clearLogs" class="secondary-button">
+              Clear Logs
+            </button>
 
+          </div>
+
+
+          <article class="panel-card logs-panel">
+
+            <div class="logs-table-heading">
+              <span>TIME</span>
+              <span>TYPE</span>
+              <span>EVENT</span>
+            </div>
+
+            <div id="logsContainer" class="logs-container">
+              <div class="empty-state">No activity recorded yet.</div>
+            </div>
+
+          </article>
+
+        </section>
+
+
+
+        <!-- SETTINGS -->
+
+        <section id="settings" class="page">
+
+          <div class="page-intro-card">
+
+            <div>
+              <span class="eyebrow">APPLICATION / PREFERENCES</span>
+              <h2>Settings</h2>
+
+              <p>
+                Customize your panel's appearance and basic information.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="settings-grid">
+
+            <article class="panel-card settings-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>General Settings</h3>
+                  <p>Basic application details</p>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label for="panelName">Panel Name</label>
+
+                <input
+                  id="panelName"
+                  class="form-input"
+                  type="text"
+                  maxlength="50"
+                  value="JUNAID ABBASI"
+                >
+              </div>
+
+
+              <div class="form-group">
+                <label for="panelVersion">Panel Version</label>
+
+                <input
+                  id="panelVersion"
+                  class="form-input"
+                  type="text"
+                  maxlength="20"
+                  value="1.0.0"
+                >
+              </div>
+
+
+              <div class="form-group">
+                <label for="themeSelect">Appearance</label>
+
+                <select id="themeSelect" class="form-input">
+                  <option value="dark">Dark Theme</option>
+                  <option value="light">Light Theme</option>
+                </select>
+              </div>
+
+
+              <button id="saveSettings" class="primary-button">
+                Save Settings
+              </button>
+
+              <p id="settingsStatus" class="form-status" aria-live="polite"></p>
+
+            </article>
+
+
+            <article class="panel-card settings-card">
+
+              <div class="card-heading">
+                <div>
+                  <h3>Application Details</h3>
+                  <p>Current panel configuration</p>
+                </div>
+              </div>
+
+
+              <div class="information-list">
+
+                <div>
+                  <span>Application</span>
+                  <strong>JUNAID ABBASI</strong>
+                </div>
+
+                <div>
+                  <span>Developer</span>
+                  <strong>LAWANGEN</strong>
+                </div>
+
+                <div>
+                  <span>Created For</span>
+                  <strong>Junaid Abbasi</strong>
+                </div>
+
+                <div>
+                  <span>Data Storage</span>
+                  <strong>Browser Local Storage</strong>
+                </div>
+
+              </div>
+
+
+              <div class="notice-card settings-notice">
+                <span class="notice-icon">ⓘ</span>
+
+                <p>
+                  Preferences are stored in this browser on this device.
+                  Clearing browser data may remove saved settings.
+                </p>
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+
+      </div>
+
+
+      <!-- FOOTER -->
 
       <footer class="app-footer">
-        <span>JUNAID ABBASI Control Panel</span>
-        <span>Developer: LAWANGEN</span>
+        <span>© <span id="footerYear"></span> JUNAID ABBASI</span>
+        <span>Specially Created for Junaid Abbasi · Developer: LAWANGEN</span>
       </footer>
 
     </main>
 
   </div>
+
+
+  <!-- TOAST NOTIFICATIONS -->
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
 
   <script src="app.js"></script>
 
