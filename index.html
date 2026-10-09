@@ -1,102 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b14">
   <title>JUNAID ABBASI — Control Panel</title>
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+  <!-- SPLASH SCREEN -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-content">
+
+      <div class="splash-logo" id="splashLogo">
+        <span class="logo-fallback">JA</span>
+        <img class="custom-logo-image" alt="Panel Logo" hidden>
+      </div>
+
+      <h1 class="splash-title">JUNAID ABBASI</h1>
+
+      <p class="splash-subtitle">CONTROL PANEL</p>
+
+      <p class="splash-created">
+        Specially Created for Junaid Abbasi
+      </p>
+
+      <p class="splash-developer">
+        Developer: <strong>LAWANGEN</strong>
+      </p>
+
+      <div class="splash-loader">
+        <span></span>
+      </div>
+
+      <p class="splash-loading-text">Initializing Panel...</p>
+
+    </div>
+  </div>
+
+
+  <!-- APPLICATION -->
   <div class="app">
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
       <div class="brand">
-        <div class="brand-logo">JA</div>
+        <div class="brand-logo" id="brandLogo">
+          <span class="logo-fallback">JA</span>
+          <img class="custom-logo-image" alt="Panel Logo" hidden>
+        </div>
 
-        <div>
-          <h1>JUNAID</h1>
-          <span>ABBASI PANEL</span>
+        <div class="brand-text">
+          <h2>JUNAID ABBASI</h2>
+          <span>CONTROL PANEL</span>
         </div>
       </div>
 
       <nav class="navigation">
 
         <button class="nav-item active" data-page="dashboard">
-          <span>⌂</span>
-          Dashboard
+          <span>▦</span>
+          <span>Dashboard</span>
         </button>
 
         <button class="nav-item" data-page="controls">
-          <span>⚙</span>
-          Controls
+          <span>◈</span>
+          <span>Controls</span>
         </button>
 
         <button class="nav-item" data-page="developer">
-          <span>⌘</span>
-          Developer
+          <span>⚙</span>
+          <span>Developer</span>
         </button>
 
         <button class="nav-item" data-page="admin">
-          <span>♛</span>
-          Admin
+          <span>♙</span>
+          <span>Admin</span>
         </button>
 
         <button class="nav-item" data-page="logs">
-          <span>◷</span>
-          Activity Logs
+          <span>≡</span>
+          <span>Activity Logs</span>
         </button>
 
         <button class="nav-item" data-page="settings">
-          <span>⚙</span>
-          Settings
+          <span>⚒</span>
+          <span>Settings</span>
         </button>
 
       </nav>
 
-      <div class="sidebar-bottom">
-        <div class="connection">
-          <span class="status-dot"></span>
-          System Online
+      <div class="sidebar-footer">
+        <div class="profile-avatar" id="profileAvatar">
+          <span class="logo-fallback">JA</span>
+          <img class="custom-logo-image" alt="Panel Logo" hidden>
         </div>
 
-        <div class="version">
-          JUNAID PANEL v1.0
+        <div>
+          <strong>JUNAID ABBASI</strong>
+          <small>Developer: LAWANGEN</small>
         </div>
       </div>
 
     </aside>
 
 
-    <!-- MAIN -->
-    <main class="main">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
       <!-- TOPBAR -->
       <header class="topbar">
 
         <div>
-          <h2 id="pageTitle">Dashboard</h2>
+          <h1 id="pageTitle">Dashboard</h1>
           <p id="pageDescription">
             JUNAID ABBASI application control center
           </p>
         </div>
 
-        <div class="profile">
-
-          <div class="profile-avatar">
-            JA
-          </div>
-
-          <div>
-            <strong>Junaid Abbasi</strong>
-            <small>Administrator</small>
-          </div>
-
+        <div class="topbar-profile">
+          <span class="online-indicator"></span>
+          <span>Panel Online</span>
         </div>
 
       </header>
@@ -106,71 +133,59 @@
       <section class="page active" id="dashboard">
 
         <div class="welcome-card">
-
           <div>
             <span class="eyebrow">WELCOME BACK</span>
 
-            <h1>
-              JUNAID ABBASI
-              <br />
-              <span>CONTROL CENTER</span>
-            </h1>
+            <h2>JUNAID ABBASI</h2>
 
             <p>
-              Manage your application configuration,
-              developer controls and administrative settings
-              from one professional dashboard.
+              Specially Created for Junaid Abbasi
+            </p>
+
+            <p class="developer-label">
+              Developer: LAWANGEN
             </p>
           </div>
 
-          <div class="welcome-badge">
-            <div class="pulse"></div>
-            ONLINE
-          </div>
-
+          <div class="welcome-badge">JA</div>
         </div>
 
 
-        <div class="stats">
+        <div class="stats-grid">
 
           <div class="stat-card">
-            <span>APPLICATION</span>
-            <strong>ONLINE</strong>
-            <small>System operational</small>
+            <span>Total Controls</span>
+            <strong id="totalControls">8</strong>
+            <small>Available UI controls</small>
           </div>
 
           <div class="stat-card">
-            <span>CONTROLS</span>
+            <span>Enabled Controls</span>
             <strong id="controlCount">0</strong>
-            <small>Available settings</small>
+            <small>Demo state only</small>
           </div>
 
           <div class="stat-card">
-            <span>MODE</span>
-            <strong>DEMO</strong>
-            <small>Safe UI environment</small>
-          </div>
-
-          <div class="stat-card">
-            <span>VERSION</span>
-            <strong>1.0.0</strong>
-            <small>Stable release</small>
+            <span>Developer</span>
+            <strong class="developer-stat">LAWANGEN</strong>
+            <small>Panel configuration</small>
           </div>
 
         </div>
 
 
-        <div class="section-header">
+        <div class="section-heading">
           <div>
-            <h3>Quick Controls</h3>
-            <p>Application configuration shortcuts</p>
+            <h2>Quick Controls</h2>
+            <p>Interface demonstration settings</p>
           </div>
+
+          <button class="secondary-button" data-open-page="controls">
+            View All
+          </button>
         </div>
 
-
-        <div class="control-grid" id="quickControls">
-          <!-- Generated by JavaScript -->
-        </div>
+        <div class="controls-grid" id="quickControls"></div>
 
       </section>
 
@@ -178,20 +193,18 @@
       <!-- CONTROLS -->
       <section class="page" id="controls">
 
-        <div class="section-header">
+        <div class="section-heading">
           <div>
-            <h3>Control Center</h3>
-            <p>Configure application demonstration settings</p>
+            <h2>Control Center</h2>
+            <p>These switches only change the panel demo state.</p>
           </div>
 
-          <button class="primary-button" id="disableAll">
+          <button class="danger-button" id="disableAll">
             Disable All
           </button>
         </div>
 
-        <div class="control-grid" id="allControls">
-          <!-- Generated by JavaScript -->
-        </div>
+        <div class="controls-grid" id="allControls"></div>
 
       </section>
 
@@ -199,71 +212,97 @@
       <!-- DEVELOPER -->
       <section class="page" id="developer">
 
-        <div class="section-header">
+        <div class="section-heading">
           <div>
-            <h3>Developer Controller</h3>
-            <p>Developer-only application configuration</p>
+            <h2>Developer Controller</h2>
+            <p>Developer configuration and branding</p>
           </div>
         </div>
 
 
-        <div class="developer-grid">
+        <!-- DEVELOPER LOGO SELECTOR -->
+        <div class="logo-selector">
 
-          <div class="developer-card">
+          <div class="logo-selector-title">
+            <div>
+              <h3>Panel Logo</h3>
+              <p>Change the logo displayed on the splash screen and panel.</p>
+            </div>
 
-            <div class="card-icon">⌘</div>
+            <span class="logo-selector-badge">DEVELOPER</span>
+          </div>
 
+
+          <div class="logo-preview" id="logoPreview">
+            <span class="logo-fallback">JA</span>
+            <img class="custom-logo-image" alt="Logo Preview" hidden>
+          </div>
+
+
+          <label for="logoUpload">Select a logo image</label>
+
+          <input
+            type="file"
+            id="logoUpload"
+            class="logo-file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+          >
+
+          <div class="logo-selector-actions">
+            <button type="button" class="secondary-button" id="resetLogo">
+              Reset Logo
+            </button>
+          </div>
+
+          <p class="logo-selector-note" id="logoStatus" aria-live="polite">
+            No custom logo selected. The default JA logo is being used.
+          </p>
+
+          <p class="logo-selector-note">
+            The selected image is saved in this browser. Clearing browser
+            storage may remove it. This static interface does not provide
+            server-side access control.
+          </p>
+
+        </div>
+
+
+        <!-- DEVELOPER SETTINGS -->
+        <div class="settings-grid">
+
+          <div class="settings-card">
             <h3>Developer Mode</h3>
-
-            <p>
-              Enable advanced application testing controls.
-            </p>
+            <p>Enable the local developer demo mode.</p>
 
             <label class="switch-row">
-              <span>Developer Mode</span>
+              <span class="status-label">Disabled</span>
               <input type="checkbox" id="developerMode">
               <i></i>
             </label>
-
           </div>
 
 
-          <div class="developer-card">
-
-            <div class="card-icon">API</div>
-
+          <div class="settings-card">
             <h3>API Environment</h3>
+            <p>Choose a display-only environment.</p>
 
-            <p>
-              Select the environment used by the application.
-            </p>
-
-            <select class="select">
-              <option>Production</option>
-              <option>Staging</option>
-              <option>Development</option>
-              <option>Local</option>
+            <select id="apiEnvironment" class="select">
+              <option value="Development">Development</option>
+              <option value="Testing">Testing</option>
+              <option value="Production">Production</option>
             </select>
-
           </div>
 
 
-          <div class="developer-card">
-
-            <div class="card-icon">LOG</div>
-
+          <div class="settings-card">
             <h3>Debug Logging</h3>
-
-            <p>
-              Display additional application diagnostic logs.
-            </p>
+            <p>Toggle demo logging display preference.</p>
 
             <label class="switch-row">
-              <span>Debug Logs</span>
-              <input type="checkbox">
+              <span class="status-label">Disabled</span>
+              <input type="checkbox" id="debugLogging">
               <i></i>
             </label>
-
           </div>
 
         </div>
@@ -274,48 +313,37 @@
       <!-- ADMIN -->
       <section class="page" id="admin">
 
-        <div class="section-header">
-
+        <div class="section-heading">
           <div>
-            <h3>Admin Controller</h3>
-            <p>Administrative management tools</p>
+            <h2>Admin Controller</h2>
+            <p>Administrative interface demonstration</p>
           </div>
-
-          <span class="admin-badge">
-            ADMIN ACCESS
-          </span>
-
         </div>
-
 
         <div class="admin-grid">
 
           <div class="admin-card">
-            <span class="admin-number">01</span>
             <h3>User Management</h3>
-            <p>Manage application users and access levels.</p>
-            <button>Open</button>
+            <p>Demo user-management module.</p>
+            <button class="secondary-button">Open Module</button>
           </div>
 
           <div class="admin-card">
-            <span class="admin-number">02</span>
             <h3>Access Control</h3>
-            <p>Configure roles and permissions.</p>
-            <button>Open</button>
+            <p>Demo access-control module.</p>
+            <button class="secondary-button">Open Module</button>
           </div>
 
           <div class="admin-card">
-            <span class="admin-number">03</span>
             <h3>System Logs</h3>
-            <p>Review application activity and events.</p>
-            <button>Open</button>
+            <p>Demo system-log module.</p>
+            <button class="secondary-button">Open Module</button>
           </div>
 
           <div class="admin-card">
-            <span class="admin-number">04</span>
             <h3>System Settings</h3>
-            <p>Configure global application settings.</p>
-            <button>Open</button>
+            <p>Demo administrative settings.</p>
+            <button class="secondary-button">Open Module</button>
           </div>
 
         </div>
@@ -323,25 +351,21 @@
       </section>
 
 
-      <!-- LOGS -->
+      <!-- ACTIVITY LOGS -->
       <section class="page" id="logs">
 
-        <div class="section-header">
+        <div class="section-heading">
           <div>
-            <h3>Activity Logs</h3>
-            <p>Recent application events</p>
-          </div>
-        </div>
-
-        <div class="log-container" id="logsContainer">
-
-          <div class="log-item">
-            <span class="log-time">NOW</span>
-            <span class="log-success">SYSTEM</span>
-            <span>Application initialized successfully</span>
+            <h2>Activity Logs</h2>
+            <p>Recent events in this browser session</p>
           </div>
 
+          <button class="secondary-button" id="clearLogs">
+            Clear Logs
+          </button>
         </div>
+
+        <div class="logs-container" id="logsContainer"></div>
 
       </section>
 
@@ -349,42 +373,39 @@
       <!-- SETTINGS -->
       <section class="page" id="settings">
 
-        <div class="section-header">
+        <div class="section-heading">
           <div>
-            <h3>Settings</h3>
-            <p>Customize your panel</p>
+            <h2>Panel Settings</h2>
+            <p>Customize your panel display</p>
           </div>
         </div>
 
-        <div class="settings-card">
 
-          <label>
-            <span>Panel Name</span>
-            <input
-              type="text"
-              value="JUNAID ABBASI"
-            />
-          </label>
+        <div class="settings-form">
 
-          <label>
-            <span>Panel Version</span>
-            <input
-              type="text"
-              value="1.0.0"
-            />
-          </label>
+          <label for="panelName">Panel Name</label>
+          <input
+            type="text"
+            id="panelName"
+            value="JUNAID ABBASI"
+            maxlength="60"
+          >
 
-          <label>
-            <span>Theme</span>
+          <label for="panelVersion">Panel Version</label>
+          <input
+            type="text"
+            id="panelVersion"
+            value="1.0.0"
+            maxlength="20"
+          >
 
-            <select class="select">
-              <option>Dark</option>
-              <option>Light</option>
-            </select>
+          <label for="themeSelect">Theme</label>
+          <select id="themeSelect" class="select">
+            <option value="Dark">Dark</option>
+            <option value="Light">Light</option>
+          </select>
 
-          </label>
-
-          <button class="primary-button">
+          <button class="primary-button" id="saveSettings">
             Save Settings
           </button>
 
@@ -392,10 +413,15 @@
 
       </section>
 
+
+      <footer class="app-footer">
+        <span>JUNAID ABBASI Control Panel</span>
+        <span>Developer: LAWANGEN</span>
+      </footer>
+
     </main>
 
   </div>
-
 
   <script src="app.js"></script>
 
