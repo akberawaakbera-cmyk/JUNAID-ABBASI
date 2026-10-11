@@ -1,1248 +1,1640 @@
-/* =====================================================
-   JUNAID ABBASI — CONTROL PANEL
-   app.js
-   UI demonstration only
-   ===================================================== */
+(() => {
+  "use strict";
 
-"use strict";
+  // ============================================
+  // JUNAID ABBASI — CONTROL PANEL
+  // Responsive control panel application
+  // ============================================
 
+  if (window.__JUNAID_CONTROL_PANEL__) return;
+  window.__JUNAID_CONTROL_PANEL__ = true;
 
-/* =====================================================
-   CONFIGURATION
-   ===================================================== */
+  const $ = (selector, root = document) =>
+    root.querySelector(selector);
 
-const CONTROL_LIST = [
-  {
-    id: "prefire",
-    name: "Pre-Fire",
-    icon: "PF",
-    description: "Pre-fire interface configuration demo."
-  },
-  {
-    id: "headshot",
-    name: "Headshot",
-    icon: "HS",
-    description: "Headshot interface configuration demo."
-  },
-  {
-    id: "esp-line",
-    name: "ESP Line",
-    icon: "ES",
-    description: "Visual ESP-line interface demonstration."
-  },
-  {
-    id: "silent-headshot",
-    name: "Silent Headshot",
-    icon: "SH",
-    description: "Silent-headshot interface demonstration."
-  },
-  {
-    id: "aimbot",
-    name: "Aimbot",
-    icon: "AB",
-    description: "Aimbot interface demonstration only."
-  },
-  {
-    id: "aim-assist",
-    name: "Aim Assist",
-    icon: "AA",
-    description: "Aim-assist interface configuration demo."
-  },
-  {
-    id: "sensitivity",
-    name: "Sensitivity",
-    icon: "SN",
-    description: "Sensitivity interface preference demo."
-  },
-  {
-    id: "fov",
-    name: "FOV",
-    icon: "FV",
-    description: "Field-of-view interface configuration demo."
-  }
-];
+  const $$ = (selector, root = document) =>
+    Array.from(root.querySelectorAll(selector));
 
+  const STORAGE = {
+    controls: "junaidAbbasiControlStates",
+    developer: "junaidAbbasiDeveloperSettings",
+    logo: "junaidAbbasiCustomLogo",
+    settings: "junaidAbbasiPanelSettings",
+    theme: "junaidAbbasiTheme",
+    logs: "junaidAbbasiActivityLogs"
+  };
 
-const STORAGE_KEYS = {
-  logo: "junaidAbbasiCustomLogo",
-  settings: "junaidAbbasiPanelSettings",
-  developer: "junaidAbbasiDeveloperSettings",
-  controls: "junaidAbbasiControlStates",
-  theme: "junaidAbbasiTheme"
-};
+  // ============================================
+  // CONTROL DEFINITIONS
+  // ============================================
 
+  const CONTROL_LIST = [
+    {
+      id: "prefire",
+      name: "Pre-Fire",
+      icon: "🎯",
+      description: "Pre-Fire control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "headshot",
+      name: "Headshot",
+      icon: "🎯",
+      description: "Headshot control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "esp-line",
+      name: "ESP Line",
+      icon: "📏",
+      description: "ESP line display setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "esp-head",
+      name: "ESP Head",
+      icon: "👁️",
+      description: "ESP head display setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "esp-distance",
+      name: "ESP Distance",
+      icon: "📐",
+      description: "Distance setting",
+      type: "range",
+      min: 50,
+      max: 500,
+      step: 10,
+      unit: "m",
+      defaultValue: 150
+    },
+    {
+      id: "silent-headshot",
+      name: "Silent Headshot",
+      icon: "⚡",
+      description: "Silent Headshot control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "aimbot",
+      name: "Aimbot",
+      icon: "🎮",
+      description: "Aiming control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "aim-assist",
+      name: "Aim Assist",
+      icon: "🕹️",
+      description: "Aim Assist control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "vector",
+      name: "Vector",
+      icon: "〽️",
+      description: "Vector control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "sensitivity",
+      name: "Sensitivity",
+      icon: "🎚️",
+      description: "Sensitivity control setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "fov",
+      name: "FOV",
+      icon: "🔭",
+      description: "Field of view setting",
+      type: "toggle",
+      defaultValue: false
+    },
+    {
+      id: "headshot-rate",
+      name: "Headshot Rate",
+      icon: "📊",
+      description: "Headshot rate setting",
+      type: "range",
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: "%",
+      defaultValue: 50
+    }
+  ];
 
-const PAGE_INFO = {
-  dashboard: {
-    title: "Dashboard",
-    description: "Your application overview"
-  },
+  const TOGGLE_CONTROLS = CONTROL_LIST.filter(
+    item => item.type === "toggle"
+  );
 
-  controls: {
-    title: "Control Center",
-    description: "Manage demonstration interface controls"
-  },
+  const RANGE_CONTROLS = CONTROL_LIST.filter(
+    item => item.type === "range"
+  );
 
-  developer: {
-    title: "Developer Workspace",
-    description: "Customize your panel configuration"
-  },
+  // ============================================
+  // APPLICATION STATE
+  // ============================================
 
-  admin: {
-    title: "Admin Workspace",
-    description: "Administrative interface modules"
-  },
+  const APP_STATE = {
+    controls: {},
+    controlValues: {},
+    logs: [],
+    developer: {
+      developerMode: false,
+      debugLogging: false,
+      apiEnvironment: "production"
+    },
+    settings: {
+      panelName: "JUNAID ABBASI",
+      panelVersion: "1.0.0",
+      theme: "dark"
+    }
+  };
 
-  logs: {
-    title: "Activity Logs",
-    description: "Review recent interface events"
-  },
-
-  settings: {
-    title: "Settings",
-    description: "Customize application preferences"
-  }
-};
-
-
-const APP_STATE = {
-  currentPage: "dashboard",
-  developerMode: false,
-  debugLogging: true,
-  environment: "local",
-  controls: {},
-  logs: [],
-  panelName: "JUNAID ABBASI",
-  panelVersion: "1.0.0",
-  theme: "dark",
-  customLogo: null
-};
-
-
-CONTROL_LIST.forEach(control => {
-  APP_STATE.controls[control.id] = false;
-});
-
-
-/* =====================================================
-   DOM HELPERS
-   ===================================================== */
-
-function $(selector, root = document) {
-  return root.querySelector(selector);
-}
-
-
-function $$(selector, root = document) {
-  return Array.from(root.querySelectorAll(selector));
-}
-
-
-function safeRead(key, fallback = null) {
-  try {
-    const value = localStorage.getItem(key);
-
-    return value === null
-      ? fallback
-      : value;
-
-  } catch (error) {
-    return fallback;
-  }
-}
-
-
-function safeWrite(key, value) {
-  try {
-    localStorage.setItem(key, value);
-    return true;
-
-  } catch (error) {
-    return false;
-  }
-}
-
-
-function safeRemove(key) {
-  try {
-    localStorage.removeItem(key);
-    return true;
-
-  } catch (error) {
-    return false;
-  }
-}
-
-
-function escapeHTML(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-
-/* =====================================================
-   TOAST NOTIFICATIONS
-   ===================================================== */
-
-function showToast(message, type = "success") {
-  const container = $("#toastContainer");
-
-  if (!container) {
-    return;
-  }
-
-  const toast = document.createElement("div");
-
-  toast.className =
-    type === "error"
-      ? "toast toast-error"
-      : "toast";
-
-  toast.textContent = message;
-
-  container.appendChild(toast);
-
-  window.setTimeout(() => {
-    toast.remove();
-  }, 3000);
-}
-
-
-/* =====================================================
-   ACTIVITY LOGS
-   ===================================================== */
-
-function addLog(message, force = false) {
-  if (!APP_STATE.debugLogging && !force) {
-    return;
-  }
-
-  const now = new Date();
-
-  const timestamp = now.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-  });
-
-  APP_STATE.logs.unshift({
-    message: String(message),
-    timestamp,
-    type: "SYSTEM"
-  });
-
-  if (APP_STATE.logs.length > 100) {
-    APP_STATE.logs.length = 100;
-  }
-
-  renderLogs();
-  updateDashboardStats();
-}
-
-
-function renderLogs() {
-  const container = $("#logsContainer");
-  const recent = $("#recentLogs");
-
-  if (container) {
-    container.replaceChildren();
-
-    if (APP_STATE.logs.length === 0) {
-      const empty = document.createElement("div");
-
-      empty.className = "empty-state";
-      empty.textContent = "No activity recorded yet.";
-
-      container.appendChild(empty);
-
+  CONTROL_LIST.forEach(control => {
+    if (control.type === "toggle") {
+      APP_STATE.controls[control.id] = control.defaultValue;
     } else {
-      APP_STATE.logs.forEach(log => {
-        const row = document.createElement("div");
+      APP_STATE.controlValues[control.id] = control.defaultValue;
+    }
+  });
 
-        row.className = "log-item";
+  // ============================================
+  // SAFE STORAGE
+  // ============================================
 
-        const time = document.createElement("span");
-        time.className = "log-time";
-        time.textContent = log.timestamp;
+  function safeRead(key, fallback = null) {
+    try {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value;
+    } catch (error) {
+      return fallback;
+    }
+  }
 
-        const type = document.createElement("span");
-        type.className = "log-success";
-        type.textContent = log.type;
+  function safeWrite(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      console.warn("Storage write failed:", error);
+      return false;
+    }
+  }
 
-        const message = document.createElement("span");
-        message.className = "log-message";
-        message.textContent = log.message;
+  function safeRemove(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
-        row.append(time, type, message);
-        container.appendChild(row);
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[character]);
+  }
+
+  // ============================================
+  // TOAST NOTIFICATIONS
+  // ============================================
+
+  let toastTimer = null;
+
+  function showToast(message, type = "success") {
+    let toast = $("#appToast");
+
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "appToast";
+      toast.setAttribute("role", "status");
+
+      Object.assign(toast.style, {
+        position: "fixed",
+        bottom: "24px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: "99999",
+        padding: "13px 20px",
+        borderRadius: "12px",
+        maxWidth: "calc(100% - 32px)",
+        fontSize: "14px",
+        fontWeight: "600",
+        boxShadow: "0 8px 28px rgba(0,0,0,.25)",
+        opacity: "0",
+        transition: "opacity .2s ease",
+        pointerEvents: "none",
+        textAlign: "center"
       });
+
+      document.body.appendChild(toast);
+    }
+
+    const backgrounds = {
+      success: "#16845b",
+      error: "#c53b48",
+      info: "#344b70",
+      warning: "#a66b12"
+    };
+
+    toast.textContent = message;
+    toast.style.background =
+      backgrounds[type] || backgrounds.info;
+    toast.style.color = "#ffffff";
+    toast.style.opacity = "1";
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+      toast.style.opacity = "0";
+    }, 2800);
+  }
+
+  // ============================================
+  // ACTIVITY LOGS
+  // ============================================
+
+  function loadLogs() {
+    try {
+      const saved = JSON.parse(
+        safeRead(STORAGE.logs, "[]")
+      );
+
+      if (Array.isArray(saved)) {
+        APP_STATE.logs = saved.slice(0, 100);
+      }
+    } catch (error) {
+      APP_STATE.logs = [];
     }
   }
 
-  if (recent) {
-    recent.replaceChildren();
-
-    if (APP_STATE.logs.length === 0) {
-      const empty = document.createElement("div");
-
-      empty.className = "empty-state";
-      empty.textContent = "No activity yet.";
-
-      recent.appendChild(empty);
-
-    } else {
-      APP_STATE.logs.slice(0, 5).forEach(log => {
-        const row = document.createElement("div");
-        row.className = "recent-log-row";
-
-        const dot = document.createElement("span");
-        dot.className = "recent-log-dot";
-
-        const message = document.createElement("span");
-        message.className = "recent-log-text";
-        message.textContent = log.message;
-
-        const time = document.createElement("span");
-        time.className = "recent-log-time";
-        time.textContent = log.timestamp;
-
-        row.append(dot, message, time);
-        recent.appendChild(row);
-      });
-    }
-  }
-}
-
-
-/* =====================================================
-   PAGE NAVIGATION
-   ===================================================== */
-
-function showPage(pageName) {
-  const target = document.getElementById(pageName);
-
-  if (!target || !PAGE_INFO[pageName]) {
-    return;
+  function saveLogs() {
+    safeWrite(
+      STORAGE.logs,
+      JSON.stringify(APP_STATE.logs.slice(0, 100))
+    );
   }
 
-  $$(".page").forEach(page => {
-    page.classList.toggle("active", page.id === pageName);
-  });
+  function addLog(message, type = "info") {
+    const entry = {
+      message: String(message),
+      type,
+      time: new Date().toISOString()
+    };
 
-  $$(".nav-item").forEach(item => {
-    const active = item.dataset.page === pageName;
+    APP_STATE.logs.unshift(entry);
+    APP_STATE.logs = APP_STATE.logs.slice(0, 100);
 
-    item.classList.toggle("active", active);
-
-    if (active) {
-      item.setAttribute("aria-current", "page");
-    } else {
-      item.removeAttribute("aria-current");
-    }
-  });
-
-  APP_STATE.currentPage = pageName;
-
-  const info = PAGE_INFO[pageName];
-
-  const title = $("#pageTitle");
-  const description = $("#pageDescription");
-
-  if (title) {
-    title.textContent = info.title;
-  }
-
-  if (description) {
-    description.textContent = info.description;
-  }
-
-  closeMobileSidebar();
-
-  if (pageName === "logs") {
+    saveLogs();
     renderLogs();
   }
 
-  addLog(`Opened ${info.title}`);
-}
+  function formatLogTime(value) {
+    const date = new Date(value);
 
-
-function initializeNavigation() {
-  $$(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-      showPage(item.dataset.page);
-    });
-  });
-
-  $$("[data-go-page]").forEach(button => {
-    button.addEventListener("click", () => {
-      showPage(button.dataset.goPage);
-    });
-  });
-}
-
-
-/* =====================================================
-   MOBILE SIDEBAR
-   ===================================================== */
-
-function openMobileSidebar() {
-  $("#sidebar")?.classList.add("open");
-  $("#sidebarOverlay")?.classList.add("visible");
-
-  document.body.style.overflow = "hidden";
-}
-
-
-function closeMobileSidebar() {
-  $("#sidebar")?.classList.remove("open");
-  $("#sidebarOverlay")?.classList.remove("visible");
-
-  document.body.style.overflow = "";
-}
-
-
-function initializeMobileNavigation() {
-  $("#menuButton")?.addEventListener("click", openMobileSidebar);
-
-  $("#closeSidebar")?.addEventListener(
-    "click",
-    closeMobileSidebar
-  );
-
-  $("#sidebarOverlay")?.addEventListener(
-    "click",
-    closeMobileSidebar
-  );
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 850) {
-      closeMobileSidebar();
+    if (Number.isNaN(date.getTime())) {
+      return "Unknown time";
     }
-  });
-}
 
-
-/* =====================================================
-   CONTROL CARD GENERATION
-   ===================================================== */
-
-function createControlCard(control) {
-  const card = document.createElement("article");
-
-  card.className = "control-card";
-  card.dataset.controlCard = control.id;
-
-  const top = document.createElement("div");
-  top.className = "control-card-top";
-
-  const icon = document.createElement("div");
-  icon.className = "control-icon";
-  icon.textContent = control.icon;
-
-  const badge = document.createElement("span");
-  badge.className = "control-state-badge";
-  badge.dataset.stateBadge = control.id;
-
-  const enabled = Boolean(APP_STATE.controls[control.id]);
-
-  badge.textContent = enabled ? "ENABLED" : "DISABLED";
-
-  top.append(icon, badge);
-
-  const title = document.createElement("h4");
-  title.textContent = control.name;
-
-  const description = document.createElement("p");
-  description.textContent = control.description;
-
-  const footer = document.createElement("div");
-  footer.className = "control-card-footer";
-
-  const status = document.createElement("span");
-  status.className = "status-label";
-  status.dataset.controlStatus = control.id;
-  status.textContent = enabled ? "Enabled" : "Disabled";
-
-  const switchLabel = document.createElement("label");
-  switchLabel.className = "switch";
-
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = enabled;
-  checkbox.dataset.control = control.id;
-
-  checkbox.setAttribute(
-    "aria-label",
-    `Toggle ${control.name} demo state`
-  );
-
-  const track = document.createElement("span");
-  track.className = "switch-track";
-
-  switchLabel.append(checkbox, track);
-  footer.append(status, switchLabel);
-
-  card.append(top, title, description, footer);
-
-  updateControlCardAppearance(card, enabled);
-
-  checkbox.addEventListener("change", () => {
-    const nextValue = checkbox.checked;
-
-    APP_STATE.controls[control.id] = nextValue;
-
-    syncControlCheckboxes(control.id, nextValue);
-
-    addLog(
-      `${control.name} ${
-        nextValue ? "enabled" : "disabled"
-      }`
-    );
-
-    updateControlCounter();
-  });
-
-  return card;
-}
-
-
-function renderControls() {
-  const container = $("#allControls");
-
-  if (!container) {
-    return;
+    return date.toLocaleString();
   }
 
-  container.replaceChildren();
+  function renderLogs() {
+    const container = $("#activityLogs") || $("#logsList");
 
-  CONTROL_LIST.forEach(control => {
-    container.appendChild(createControlCard(control));
-  });
+    if (!container) return;
 
-  const total = $("#totalControls");
-
-  if (total) {
-    total.textContent = CONTROL_LIST.length;
-  }
-
-  updateControlCounter();
-}
-
-
-function updateControlCardAppearance(card, enabled) {
-  if (!card) {
-    return;
-  }
-
-  card.classList.toggle("is-enabled", enabled);
-
-  const badge = $("[data-state-badge]", card);
-  const status = $("[data-control-status]", card);
-
-  if (badge) {
-    badge.textContent = enabled ? "ENABLED" : "DISABLED";
-  }
-
-  if (status) {
-    status.textContent = enabled ? "Enabled" : "Disabled";
-  }
-}
-
-
-function syncControlCheckboxes(controlId, enabled) {
-  $$(`[data-control="${controlId}"]`).forEach(checkbox => {
-    checkbox.checked = enabled;
-
-    updateControlCardAppearance(
-      checkbox.closest(".control-card"),
-      enabled
-    );
-  });
-}
-
-
-function updateControlCounter() {
-  const enabledCount = Object.values(APP_STATE.controls)
-    .filter(Boolean)
-    .length;
-
-  const counter = $("#controlCount");
-  const summary = $("#controlsSummary");
-
-  if (counter) {
-    counter.textContent = enabledCount;
-  }
-
-  if (summary) {
-    summary.textContent =
-      `${enabledCount} / ${CONTROL_LIST.length} enabled`;
-  }
-
-  updateDashboardStats();
-}
-
-
-function disableAllControls() {
-  CONTROL_LIST.forEach(control => {
-    APP_STATE.controls[control.id] = false;
-    syncControlCheckboxes(control.id, false);
-  });
-
-  saveControlStates();
-  updateControlCounter();
-
-  addLog("All demonstration controls disabled");
-
-  showToast("All demo controls disabled.");
-}
-
-
-function initializeDisableAll() {
-  $("#disableAll")?.addEventListener(
-    "click",
-    disableAllControls
-  );
-}
-
-
-/* =====================================================
-   SAVE AND RESTORE CONTROL STATES
-   ===================================================== */
-
-function saveControlStates() {
-  safeWrite(
-    STORAGE_KEYS.controls,
-    JSON.stringify(APP_STATE.controls)
-  );
-}
-
-
-function loadControlStates() {
-  try {
-    const raw = safeRead(STORAGE_KEYS.controls);
-
-    if (!raw) {
+    if (!APP_STATE.logs.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📋</div>
+          <p>No activity available.</p>
+        </div>
+      `;
       return;
     }
 
-    const saved = JSON.parse(raw);
+    container.innerHTML = APP_STATE.logs.map(log => `
+      <div class="log-entry">
+        <span class="log-indicator log-${escapeHTML(log.type)}"></span>
+        <div class="log-entry-content">
+          <div class="log-message">
+            ${escapeHTML(log.message)}
+          </div>
+          <small class="log-time">
+            ${escapeHTML(formatLogTime(log.time))}
+          </small>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // ============================================
+  // CONTROL STORAGE
+  // ============================================
+
+  function loadControlStates() {
+    try {
+      const raw = safeRead(STORAGE.controls, "{}");
+      const saved = JSON.parse(raw);
+
+      if (!saved || typeof saved !== "object") return;
+
+      // Supports the older format, where each control
+      // was saved directly in the same object.
+      const savedToggles =
+        saved.controls && typeof saved.controls === "object"
+          ? saved.controls
+          : saved;
+
+      const savedValues =
+        saved.values && typeof saved.values === "object"
+          ? saved.values
+          : saved.__values && typeof saved.__values === "object"
+            ? saved.__values
+            : {};
+
+      TOGGLE_CONTROLS.forEach(control => {
+        if (typeof savedToggles[control.id] === "boolean") {
+          APP_STATE.controls[control.id] =
+            savedToggles[control.id];
+        }
+      });
+
+      RANGE_CONTROLS.forEach(control => {
+        const value = savedValues[control.id] ??
+          saved[control.id];
+
+        if (Number.isFinite(Number(value))) {
+          APP_STATE.controlValues[control.id] =
+            clampRangeValue(control, Number(value));
+        }
+      });
+    } catch (error) {
+      console.warn("Could not load saved controls.");
+    }
+  }
+
+  function saveControlStates() {
+    const data = {
+      controls: APP_STATE.controls,
+      values: APP_STATE.controlValues
+    };
+
+    return safeWrite(
+      STORAGE.controls,
+      JSON.stringify(data)
+    );
+  }
+
+  function clampRangeValue(control, value) {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+      return control.defaultValue;
+    }
+
+    const clamped = Math.min(
+      control.max,
+      Math.max(control.min, numericValue)
+    );
+
+    const step = control.step || 1;
+    const stepped = control.min +
+      Math.round((clamped - control.min) / step) * step;
+
+    return Math.min(
+      control.max,
+      Math.max(control.min, stepped)
+    );
+  }
+
+  // ============================================
+  // CONTROL CARD GENERATION
+  // ============================================
+
+  function createControlCard(control) {
+    const card = document.createElement("article");
+    card.className = "control-card";
+    card.dataset.controlCard = control.id;
+
+    const isRange = control.type === "range";
+
+    const topMarkup = `
+      <div class="control-card-top">
+        <div class="control-icon">
+          ${escapeHTML(control.icon)}
+        </div>
+
+        <div class="control-card-heading">
+          <h3>${escapeHTML(control.name)}</h3>
+          <p>${escapeHTML(control.description)}</p>
+        </div>
+
+        ${
+          isRange
+            ? `<span class="control-state-badge">SETTING</span>`
+            : `
+              <span class="control-state-badge ${
+                APP_STATE.controls[control.id] ? "active" : ""
+              }" data-state-badge>
+                ${APP_STATE.controls[control.id] ? "ON" : "OFF"}
+              </span>
+            `
+        }
+      </div>
+    `;
+
+    let bodyMarkup = "";
+
+    if (isRange) {
+      const value = APP_STATE.controlValues[control.id];
+
+      bodyMarkup = `
+        <div class="range-control">
+          <div class="range-control-header">
+            <label for="range-${escapeHTML(control.id)}">
+              ${escapeHTML(control.name)}
+            </label>
+
+            <output
+              class="range-value"
+              data-range-value="${escapeHTML(control.id)}"
+            >
+              ${escapeHTML(value)}${escapeHTML(control.unit)}
+            </output>
+          </div>
+
+          <input
+            type="range"
+            id="range-${escapeHTML(control.id)}"
+            class="control-range"
+            data-range-control="${escapeHTML(control.id)}"
+            min="${control.min}"
+            max="${control.max}"
+            step="${control.step}"
+            value="${value}"
+            aria-label="${escapeHTML(control.name)}"
+          >
+
+          <div class="range-limits">
+            <span>${control.min}${escapeHTML(control.unit)}</span>
+            <span>${control.max}${escapeHTML(control.unit)}</span>
+          </div>
+        </div>
+      `;
+    } else {
+      bodyMarkup = `
+        <div class="control-card-footer">
+          <span class="status-label" data-status-label>
+            ${APP_STATE.controls[control.id] ? "Enabled" : "Disabled"}
+          </span>
+
+          <label class="switch">
+            <input
+              type="checkbox"
+              data-control="${escapeHTML(control.id)}"
+              aria-label="${escapeHTML(control.name)}"
+              ${APP_STATE.controls[control.id] ? "checked" : ""}
+            >
+
+            <span class="switch-track"></span>
+          </label>
+        </div>
+      `;
+    }
+
+    card.innerHTML = topMarkup + bodyMarkup;
+
+    return card;
+  }
+
+  function renderControls() {
+    const container = $("#allControls");
+
+    if (!container) {
+      console.warn("Missing #allControls in HTML.");
+      return;
+    }
+
+    container.innerHTML = "";
 
     CONTROL_LIST.forEach(control => {
-      APP_STATE.controls[control.id] =
-        Boolean(saved[control.id]);
+      container.appendChild(createControlCard(control));
     });
 
-  } catch (error) {
-    console.warn("Could not restore control states.");
+    updateControlCounter();
+    initializeControlActions();
   }
-}
 
+  function updateControlCardAppearance(id) {
+    const card = $(`[data-control-card="${id}"]`);
 
-/* =====================================================
-   DEVELOPER SETTINGS
-   ===================================================== */
+    if (!card) return;
 
-function loadDeveloperSettings() {
-  try {
-    const raw = safeRead(STORAGE_KEYS.developer);
+    const enabled = Boolean(APP_STATE.controls[id]);
+    const badge = $("[data-state-badge]", card);
+    const status = $("[data-status-label]", card);
+    const checkbox = $("[data-control]", card);
 
-    if (!raw) {
-      return;
+    if (badge) {
+      badge.textContent = enabled ? "ON" : "OFF";
+      badge.classList.toggle("active", enabled);
     }
 
-    const saved = JSON.parse(raw);
+    if (status) {
+      status.textContent = enabled ? "Enabled" : "Disabled";
+    }
 
-    APP_STATE.developerMode =
-      Boolean(saved.developerMode);
-
-    APP_STATE.debugLogging =
-      saved.debugLogging !== false;
-
-    APP_STATE.environment =
-      ["local", "development", "production"].includes(
-        saved.environment
-      )
-        ? saved.environment
-        : "local";
-
-  } catch (error) {
-    console.warn("Could not restore developer preferences.");
+    if (checkbox) {
+      checkbox.checked = enabled;
+    }
   }
-}
 
-
-function initializeDeveloperSettings() {
-  const developerToggle = $("#developerMode");
-  const debugToggle = $("#debugLogging");
-  const environment = $("#apiEnvironment");
-
-  if (developerToggle) {
-    developerToggle.checked = APP_STATE.developerMode;
-
-    developerToggle.addEventListener("change", () => {
-      APP_STATE.developerMode = developerToggle.checked;
-
-      addLog(
-        `Developer mode ${
-          APP_STATE.developerMode ? "enabled" : "disabled"
-        }`
-      );
+  function syncControlCheckboxes() {
+    TOGGLE_CONTROLS.forEach(control => {
+      updateControlCardAppearance(control.id);
     });
-  }
 
-  if (debugToggle) {
-    debugToggle.checked = APP_STATE.debugLogging;
-
-    debugToggle.addEventListener("change", () => {
-      APP_STATE.debugLogging = debugToggle.checked;
-
-      addLog(
-        `Debug logging ${
-          APP_STATE.debugLogging ? "enabled" : "disabled"
-        }`,
-        true
-      );
-    });
-  }
-
-  if (environment) {
-    environment.value = APP_STATE.environment;
-  }
-
-  $("#saveDeveloperSettings")?.addEventListener("click", () => {
-    APP_STATE.developerMode =
-      Boolean($("#developerMode")?.checked);
-
-    APP_STATE.debugLogging =
-      Boolean($("#debugLogging")?.checked);
-
-    APP_STATE.environment =
-      $("#apiEnvironment")?.value || "local";
-
-    const saved = safeWrite(
-      STORAGE_KEYS.developer,
-      JSON.stringify({
-        developerMode: APP_STATE.developerMode,
-        debugLogging: APP_STATE.debugLogging,
-        environment: APP_STATE.environment
-      })
-    );
-
-    if (!saved) {
-      showToast(
-        "Could not save preferences in this browser.",
-        "error"
+    RANGE_CONTROLS.forEach(control => {
+      const input = $(
+        `[data-range-control="${control.id}"]`
       );
 
-      return;
-    }
-
-    addLog("Developer preferences saved", true);
-    showToast("Developer preferences saved.");
-  });
-}
-
-
-/* =====================================================
-   LOGO SYSTEM
-   ===================================================== */
-
-function renderLogoElement(element, imageData) {
-  if (!element) {
-    return;
-  }
-
-  element.replaceChildren();
-
-  if (imageData) {
-    const image = document.createElement("img");
-
-    image.src = imageData;
-    image.alt = "JUNAID ABBASI logo";
-
-    element.appendChild(image);
-
-  } else {
-    element.textContent = "JA";
-  }
-}
-
-
-function updateAllLogos() {
-  const imageData = APP_STATE.customLogo;
-
-  renderLogoElement($("#splashLogo"), imageData);
-  renderLogoElement($("#sidebarLogo"), imageData);
-  renderLogoElement($("#profileAvatar"), imageData);
-  renderLogoElement($("#developerLogoPreview"), imageData);
-}
-
-
-function loadSavedLogo() {
-  const imageData = safeRead(STORAGE_KEYS.logo);
-
-  if (
-    typeof imageData === "string" &&
-    imageData.startsWith("data:image/")
-  ) {
-    APP_STATE.customLogo = imageData;
-  }
-
-  updateAllLogos();
-}
-
-
-function initializeLogoUpload() {
-  const input = $("#developerLogoUpload");
-  const resetButton = $("#resetLogo");
-  const status = $("#logoStatus");
-
-  if (!input) {
-    return;
-  }
-
-  input.addEventListener("change", () => {
-    const file = input.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    const allowedTypes = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/gif"
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      showToast("Choose a PNG, JPG, WEBP or GIF image.", "error");
-      input.value = "";
-      return;
-    }
-
-    /*
-      Keep the file small so browser local storage
-      is less likely to run out of space.
-    */
-
-    const maxBytes = 1024 * 1024;
-
-    if (file.size > maxBytes) {
-      showToast(
-        "Please choose a logo smaller than 1 MB.",
-        "error"
+      const output = $(
+        `[data-range-value="${control.id}"]`
       );
 
-      input.value = "";
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const imageData = reader.result;
-
-      if (
-        typeof imageData !== "string" ||
-        !imageData.startsWith("data:image/")
-      ) {
-        showToast("Could not read the selected image.", "error");
-        return;
+      if (input) {
+        input.value = APP_STATE.controlValues[control.id];
       }
 
-      const saved = safeWrite(
-        STORAGE_KEYS.logo,
-        imageData
+      if (output) {
+        output.textContent =
+          `${APP_STATE.controlValues[control.id]}${control.unit}`;
+      }
+    });
+  }
+
+  function updateControlCounter() {
+    const enabledCount = TOGGLE_CONTROLS.filter(
+      control => APP_STATE.controls[control.id]
+    ).length;
+
+    const totalCount = TOGGLE_CONTROLS.length;
+
+    const activityCount = $("#activityCount");
+    const totalControls = $("#totalControls");
+    const controlCount = $("#controlCount");
+
+    if (activityCount) {
+      activityCount.textContent = String(APP_STATE.logs.length);
+    }
+
+    if (totalControls) {
+      totalControls.textContent = String(totalCount);
+    }
+
+    if (controlCount) {
+      controlCount.textContent =
+        `${enabledCount}/${totalCount}`;
+    }
+
+    const enabledElements = $$("[data-enabled-controls]");
+    enabledElements.forEach(element => {
+      element.textContent = String(enabledCount);
+    });
+  }
+
+  // ============================================
+  // APPLY AND DISABLE CONTROLS
+  // ============================================
+
+  function applyControlSettings() {
+    saveControlStates();
+    syncControlCheckboxes();
+    updateControlCounter();
+
+    addLog("Control settings applied.", "success");
+    showToast("Settings applied successfully.", "success");
+  }
+
+  function disableAllControls() {
+    TOGGLE_CONTROLS.forEach(control => {
+      APP_STATE.controls[control.id] = false;
+    });
+
+    saveControlStates();
+    syncControlCheckboxes();
+    updateControlCounter();
+
+    addLog("All toggle controls disabled.", "warning");
+    showToast("All controls disabled.", "info");
+  }
+
+  function initializeDisableAll() {
+    const buttons = [
+      $("#disableAll"),
+      $("#disableAllControls"),
+      $("#resetControls")
+    ].filter(Boolean);
+
+    buttons.forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        disableAllControls();
+      });
+    });
+  }
+
+  // ============================================
+  // IMPORT / EXPORT / APPLY TOOLBAR
+  // ============================================
+
+  function initializeControlActions() {
+    const container = $("#allControls");
+
+    if (!container) return;
+
+    if ($("#controlActionToolbar")) return;
+
+    const toolbar = document.createElement("section");
+    toolbar.id = "controlActionToolbar";
+    toolbar.className = "control-actions";
+
+    toolbar.innerHTML = `
+      <div class="control-section-note">
+        <strong>Control Settings</strong>
+        <p>Adjust your settings and save your changes.</p>
+      </div>
+
+      <div class="control-action-buttons">
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="applyControlSettings"
+        >
+          Apply Settings
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="importControlSettings"
+        >
+          Import Settings
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="exportControlSettings"
+        >
+          Export Settings
+        </button>
+
+        <input
+          type="file"
+          id="importControlFile"
+          class="import-control-input"
+          accept=".json,application/json"
+          hidden
+        >
+      </div>
+    `;
+
+    container.insertAdjacentElement("beforebegin", toolbar);
+
+    $("#applyControlSettings", toolbar).addEventListener(
+      "click",
+      applyControlSettings
+    );
+
+    $("#importControlSettings", toolbar).addEventListener(
+      "click",
+      () => {
+        $("#importControlFile", toolbar).click();
+      }
+    );
+
+    $("#exportControlSettings", toolbar).addEventListener(
+      "click",
+      exportControlSettings
+    );
+
+    $("#importControlFile", toolbar).addEventListener(
+      "change",
+      handleControlImport
+    );
+  }
+
+  function exportControlSettings() {
+    const payload = {
+      panel: "JUNAID ABBASI — CONTROL PANEL",
+      version: APP_STATE.settings.panelVersion,
+      exportedAt: new Date().toISOString(),
+      controls: APP_STATE.controls,
+      values: APP_STATE.controlValues
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(payload, null, 2)],
+      { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = "junaid-abbasi-settings.json";
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    addLog("Settings exported.", "success");
+    showToast("Settings file exported.", "success");
+  }
+
+  async function handleControlImport(event) {
+    const file = event.target.files &&
+      event.target.files[0];
+
+    if (!file) return;
+
+    try {
+      if (file.size > 1024 * 1024) {
+        throw new Error("The selected file is too large.");
+      }
+
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      if (!data || typeof data !== "object" ||
+          Array.isArray(data)) {
+        throw new Error("Invalid settings file.");
+      }
+
+      const importedControls =
+        data.controls && typeof data.controls === "object"
+          ? data.controls
+          : data;
+
+      const importedValues =
+        data.values && typeof data.values === "object"
+          ? data.values
+          : data.__values && typeof data.__values === "object"
+            ? data.__values
+            : data;
+
+      let importedCount = 0;
+
+      TOGGLE_CONTROLS.forEach(control => {
+        const value = importedControls[control.id];
+
+        if (typeof value === "boolean") {
+          APP_STATE.controls[control.id] = value;
+          importedCount++;
+        }
+      });
+
+      RANGE_CONTROLS.forEach(control => {
+        const value = importedValues[control.id];
+
+        if (
+          value !== undefined &&
+          value !== null &&
+          Number.isFinite(Number(value))
+        ) {
+          APP_STATE.controlValues[control.id] =
+            clampRangeValue(control, Number(value));
+
+          importedCount++;
+        }
+      });
+
+      if (!importedCount) {
+        throw new Error("No recognized settings found.");
+      }
+
+      saveControlStates();
+      syncControlCheckboxes();
+      updateControlCounter();
+
+      addLog("Settings imported successfully.", "success");
+      showToast("Settings imported successfully.", "success");
+    } catch (error) {
+      console.error(error);
+      addLog("Settings import failed.", "error");
+      showToast(
+        error.message || "Unable to import settings.",
+        "error"
+      );
+    } finally {
+      event.target.value = "";
+    }
+  }
+
+  // ============================================
+  // PAGE NAVIGATION
+  // ============================================
+
+  const PAGE_INFO = {
+    dashboard: {
+      title: "Dashboard",
+      description: "Your control panel overview"
+    },
+    controls: {
+      title: "Controls",
+      description: "Manage your control settings"
+    },
+    developer: {
+      title: "Developer",
+      description: "Developer preferences"
+    },
+    admin: {
+      title: "Admin",
+      description: "Administration and maintenance"
+    },
+    logs: {
+      title: "Activity Logs",
+      description: "Recent panel activity"
+    },
+    settings: {
+      title: "Settings",
+      description: "Personalize your panel"
+    }
+  };
+
+  function navigateToPage(pageName) {
+    if (!PAGE_INFO[pageName]) {
+      pageName = "dashboard";
+    }
+
+    $$("[data-page]").forEach(page => {
+      const isActive = page.dataset.page === pageName;
+
+      page.classList.toggle("active", isActive);
+      page.hidden = !isActive;
+    });
+
+    $$("[data-nav]").forEach(link => {
+      const isActive = link.dataset.nav === pageName;
+
+      link.classList.toggle("active", isActive);
+
+      if (isActive) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+
+    const title = $("#pageTitle");
+    const description = $("#pageDescription");
+    const info = PAGE_INFO[pageName];
+
+    if (title) title.textContent = info.title;
+
+    if (description) {
+      description.textContent = info.description;
+    }
+
+    closeSidebar();
+
+    try {
+      history.replaceState(null, "", `#${pageName}`);
+    } catch (error) {
+      // Navigation still works if history is unavailable.
+    }
+
+    if (pageName === "logs") {
+      renderLogs();
+    }
+
+    if (pageName === "controls") {
+      updateControlCounter();
+    }
+  }
+
+  function initializeNavigation() {
+    $$("[data-nav]").forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        navigateToPage(link.dataset.nav);
+      });
+    });
+
+    $$("[data-page-link]").forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        navigateToPage(link.dataset.pageLink);
+      });
+    });
+
+    const initialPage = location.hash.replace("#", "");
+
+    navigateToPage(
+      PAGE_INFO[initialPage] ? initialPage : "dashboard"
+    );
+  }
+
+  // ============================================
+  // MOBILE SIDEBAR
+  // ============================================
+
+  function openSidebar() {
+    const sidebar = $("#sidebar");
+    const overlay = $("#sidebarOverlay");
+
+    if (sidebar) sidebar.classList.add("open");
+    if (overlay) overlay.classList.add("visible");
+
+    document.body.classList.add("sidebar-open");
+  }
+
+  function closeSidebar() {
+    const sidebar = $("#sidebar");
+    const overlay = $("#sidebarOverlay");
+
+    if (sidebar) sidebar.classList.remove("open");
+    if (overlay) overlay.classList.remove("visible");
+
+    document.body.classList.remove("sidebar-open");
+  }
+
+  function initializeSidebar() {
+    const menuButton = $("#menuButton");
+    const closeButton = $("#closeSidebar");
+    const overlay = $("#sidebarOverlay");
+
+    if (menuButton) {
+      menuButton.addEventListener("click", openSidebar);
+    }
+
+    if (closeButton) {
+      closeButton.addEventListener("click", closeSidebar);
+    }
+
+    if (overlay) {
+      overlay.addEventListener("click", closeSidebar);
+    }
+  }
+
+  // ============================================
+  // DEVELOPER SETTINGS
+  // ============================================
+
+  function loadDeveloperSettings() {
+    try {
+      const saved = JSON.parse(
+        safeRead(STORAGE.developer, "{}")
       );
 
-      if (!saved) {
-        showToast(
-          "Browser storage is full. Choose a smaller image.",
-          "error"
+      if (!saved || typeof saved !== "object") return;
+
+      APP_STATE.developer = {
+        ...APP_STATE.developer,
+        ...saved
+      };
+    } catch (error) {
+      console.warn("Developer settings could not be loaded.");
+    }
+  }
+
+  function initializeDeveloperSettings() {
+    const developerMode = $("#developerMode");
+    const debugLogging = $("#debugLogging");
+    const apiEnvironment = $("#apiEnvironment");
+    const saveButton = $("#saveDeveloperSettings");
+
+    if (developerMode) {
+      developerMode.checked =
+        Boolean(APP_STATE.developer.developerMode);
+    }
+
+    if (debugLogging) {
+      debugLogging.checked =
+        Boolean(APP_STATE.developer.debugLogging);
+    }
+
+    if (apiEnvironment) {
+      apiEnvironment.value =
+        APP_STATE.developer.apiEnvironment || "production";
+    }
+
+    if (!saveButton) return;
+
+    saveButton.addEventListener("click", event => {
+      event.preventDefault();
+
+      APP_STATE.developer = {
+        developerMode: Boolean(
+          developerMode && developerMode.checked
+        ),
+        debugLogging: Boolean(
+          debugLogging && debugLogging.checked
+        ),
+        apiEnvironment: apiEnvironment
+          ? apiEnvironment.value
+          : "production"
+      };
+
+      safeWrite(
+        STORAGE.developer,
+        JSON.stringify(APP_STATE.developer)
+      );
+
+      addLog("Developer settings saved.", "success");
+      showToast("Developer settings saved.", "success");
+    });
+  }
+
+  // ============================================
+  // LOGO UPLOAD
+  // ============================================
+
+  function setLogoImage(source) {
+    [
+      $("#splashLogo"),
+      $("#sidebarLogo"),
+      $("#profileAvatar"),
+      $("#developerLogoPreview")
+    ].filter(Boolean).forEach(element => {
+      if (element.tagName === "IMG") {
+        element.src = source;
+      } else {
+        element.style.backgroundImage =
+          `url("${source.replace(/"/g, "%22")}")`;
+      }
+    });
+  }
+
+  function loadCustomLogo() {
+    const saved = safeRead(STORAGE.logo);
+
+    if (saved && saved.startsWith("data:image/")) {
+      setLogoImage(saved);
+    }
+  }
+
+  function initializeLogoUpload() {
+    const upload = $("#developerLogoUpload");
+    const reset = $("#resetLogo");
+    const status = $("#logoStatus");
+
+    if (upload) {
+      upload.addEventListener("change", event => {
+        const file = event.target.files &&
+          event.target.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+          showToast("Please select an image file.", "error");
+          return;
+        }
+
+        if (file.size > 3 * 1024 * 1024) {
+          showToast("Image must be smaller than 3 MB.", "error");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const source = reader.result;
+
+          if (
+            typeof source !== "string" ||
+            !source.startsWith("data:image/")
+          ) {
+            showToast("Unable to read this image.", "error");
+            return;
+          }
+
+          safeWrite(STORAGE.logo, source);
+          setLogoImage(source);
+
+          if (status) {
+            status.textContent = "Logo updated successfully.";
+          }
+
+          addLog("Panel logo updated.", "success");
+          showToast("Logo updated successfully.", "success");
+        };
+
+        reader.onerror = () => {
+          showToast("Unable to read this image.", "error");
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    if (reset) {
+      reset.addEventListener("click", event => {
+        event.preventDefault();
+
+        safeRemove(STORAGE.logo);
+
+        if (status) {
+          status.textContent = "Default logo restored.";
+        }
+
+        const imageElements = [
+          $("#splashLogo"),
+          $("#sidebarLogo"),
+          $("#profileAvatar"),
+          $("#developerLogoPreview")
+        ].filter(Boolean);
+
+        imageElements.forEach(element => {
+          element.style.backgroundImage = "";
+
+          if (element.tagName === "IMG") {
+            element.removeAttribute("src");
+          }
+        });
+
+        addLog("Panel logo reset.", "info");
+        showToast("Default logo restored.", "success");
+      });
+    }
+  }
+
+  // ============================================
+  // GENERAL SETTINGS
+  // ============================================
+
+  function loadGeneralSettings() {
+    try {
+      const saved = JSON.parse(
+        safeRead(STORAGE.settings, "{}")
+      );
+
+      if (saved && typeof saved === "object") {
+        APP_STATE.settings = {
+          ...APP_STATE.settings,
+          ...saved
+        };
+      }
+    } catch (error) {
+      console.warn("General settings could not be loaded.");
+    }
+
+    const storedTheme = safeRead(STORAGE.theme);
+
+    if (storedTheme) {
+      APP_STATE.settings.theme = storedTheme;
+    }
+  }
+
+  function applyTheme(theme) {
+    const validThemes = ["dark", "light"];
+
+    const selectedTheme = validThemes.includes(theme)
+      ? theme
+      : "dark";
+
+    APP_STATE.settings.theme = selectedTheme;
+
+    document.documentElement.dataset.theme = selectedTheme;
+    document.body.dataset.theme = selectedTheme;
+
+    const selector = $("#themeSelect");
+
+    if (selector) {
+      selector.value = selectedTheme;
+    }
+
+    safeWrite(STORAGE.theme, selectedTheme);
+  }
+
+  function applyGeneralSettings() {
+    const nameInput = $("#panelName");
+    const versionInput = $("#panelVersion");
+
+    if (nameInput) {
+      nameInput.value = APP_STATE.settings.panelName;
+    }
+
+    if (versionInput) {
+      versionInput.value = APP_STATE.settings.panelVersion;
+    }
+
+    const overviewName = $("#overviewPanelName");
+    const overviewVersion = $("#overviewVersion");
+
+    if (overviewName) {
+      overviewName.textContent =
+        APP_STATE.settings.panelName;
+    }
+
+    if (overviewVersion) {
+      overviewVersion.textContent =
+        APP_STATE.settings.panelVersion;
+    }
+
+    const title = $("#sidebarPanelName");
+
+    if (title) {
+      title.textContent = APP_STATE.settings.panelName;
+    }
+
+    const versionBadge = $("#panelVersionBadge");
+
+    if (versionBadge) {
+      versionBadge.textContent =
+        APP_STATE.settings.panelVersion;
+    }
+
+    applyTheme(APP_STATE.settings.theme);
+  }
+
+  function initializeGeneralSettings() {
+    const saveButton = $("#saveSettings");
+    const themeSelector = $("#themeSelect");
+    const status = $("#settingsStatus");
+
+    if (themeSelector) {
+      themeSelector.addEventListener("change", () => {
+        applyTheme(themeSelector.value);
+      });
+    }
+
+    if (!saveButton) return;
+
+    saveButton.addEventListener("click", event => {
+      event.preventDefault();
+
+      const nameInput = $("#panelName");
+      const versionInput = $("#panelVersion");
+
+      APP_STATE.settings.panelName =
+        nameInput && nameInput.value.trim()
+          ? nameInput.value.trim().slice(0, 60)
+          : "JUNAID ABBASI";
+
+      APP_STATE.settings.panelVersion =
+        versionInput && versionInput.value.trim()
+          ? versionInput.value.trim().slice(0, 20)
+          : "1.0.0";
+
+      APP_STATE.settings.theme =
+        themeSelector ? themeSelector.value : "dark";
+
+      safeWrite(
+        STORAGE.settings,
+        JSON.stringify(APP_STATE.settings)
+      );
+
+      applyGeneralSettings();
+
+      if (status) {
+        status.textContent = "Settings saved successfully.";
+      }
+
+      addLog("Panel settings saved.", "success");
+      showToast("Settings saved successfully.", "success");
+    });
+  }
+
+  // ============================================
+  // ADMIN ACTIONS
+  // ============================================
+
+  function initializeAdminActions() {
+    $$("[data-admin-action]").forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+
+        const action = button.dataset.adminAction;
+
+        switch (action) {
+          case "clear-logs":
+          case "clearLogs":
+            clearActivityLogs();
+            break;
+
+          case "reset-controls":
+          case "resetControls":
+            resetControlSettings();
+            break;
+
+          case "reset-settings":
+          case "resetSettings":
+            resetGeneralSettings();
+            break;
+
+          case "refresh":
+          case "refresh-panel":
+            renderControls();
+            renderLogs();
+            updateControlCounter();
+            showToast("Panel refreshed.", "success");
+            addLog("Panel refreshed.", "info");
+            break;
+
+          default:
+            showToast("Action is not available.", "warning");
+        }
+      });
+    });
+  }
+
+  function clearActivityLogs() {
+    APP_STATE.logs = [];
+    saveLogs();
+    renderLogs();
+    updateControlCounter();
+
+    showToast("Activity logs cleared.", "success");
+  }
+
+  function resetControlSettings() {
+    CONTROL_LIST.forEach(control => {
+      if (control.type === "toggle") {
+        APP_STATE.controls[control.id] =
+          control.defaultValue;
+      } else {
+        APP_STATE.controlValues[control.id] =
+          control.defaultValue;
+      }
+    });
+
+    saveControlStates();
+    renderControls();
+
+    addLog("Control settings reset.", "warning");
+    showToast("Control settings reset.", "success");
+  }
+
+  function resetGeneralSettings() {
+    APP_STATE.settings = {
+      panelName: "JUNAID ABBASI",
+      panelVersion: "1.0.0",
+      theme: "dark"
+    };
+
+    safeWrite(
+      STORAGE.settings,
+      JSON.stringify(APP_STATE.settings)
+    );
+
+    applyGeneralSettings();
+
+    addLog("Panel settings reset.", "warning");
+    showToast("Panel settings reset.", "success");
+  }
+
+  // ============================================
+  // CLEAR LOG BUTTON
+  // ============================================
+
+  function initializeClearLogs() {
+    const button = $("#clearLogs");
+
+    if (!button) return;
+
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      clearActivityLogs();
+    });
+  }
+
+  // ============================================
+  // GLOBAL CONTROL EVENTS
+  // ============================================
+
+  function initializeControlEvents() {
+    document.addEventListener("change", event => {
+      const checkbox = event.target.closest("[data-control]");
+
+      if (checkbox) {
+        const id = checkbox.dataset.control;
+
+        if (!(id in APP_STATE.controls)) return;
+
+        APP_STATE.controls[id] = checkbox.checked;
+
+        saveControlStates();
+        updateControlCardAppearance(id);
+        updateControlCounter();
+
+        const control = CONTROL_LIST.find(
+          item => item.id === id
+        );
+
+        addLog(
+          `${control ? control.name : id}: ${
+            checkbox.checked ? "Enabled" : "Disabled"
+          }`,
+          checkbox.checked ? "success" : "info"
         );
 
         return;
       }
 
-      APP_STATE.customLogo = imageData;
-
-      updateAllLogos();
-
-      if (status) {
-        status.textContent =
-          "Logo saved in this browser.";
-      }
-
-      addLog("Application logo updated");
-
-      showToast("Logo updated successfully.");
-    };
-
-    reader.onerror = () => {
-      showToast("Could not read the selected file.", "error");
-    };
-
-    reader.readAsDataURL(file);
-  });
-
-
-  resetButton?.addEventListener("click", () => {
-    safeRemove(STORAGE_KEYS.logo);
-
-    APP_STATE.customLogo = null;
-
-    updateAllLogos();
-
-    input.value = "";
-
-    if (status) {
-      status.textContent = "Default logo is active.";
-    }
-
-    addLog("Default application logo restored");
-
-    showToast("Default logo restored.");
-  });
-}
-
-
-/* =====================================================
-   GENERAL SETTINGS
-   ===================================================== */
-
-function loadGeneralSettings() {
-  try {
-    const raw = safeRead(STORAGE_KEYS.settings);
-
-    if (!raw) {
-      return;
-    }
-
-    const saved = JSON.parse(raw);
-
-    if (
-      typeof saved.panelName === "string" &&
-      saved.panelName.trim()
-    ) {
-      APP_STATE.panelName = saved.panelName.trim();
-    }
-
-    if (
-      typeof saved.panelVersion === "string" &&
-      saved.panelVersion.trim()
-    ) {
-      APP_STATE.panelVersion = saved.panelVersion.trim();
-    }
-
-    if (saved.theme === "light" || saved.theme === "dark") {
-      APP_STATE.theme = saved.theme;
-    }
-
-  } catch (error) {
-    console.warn("Could not restore general settings.");
-  }
-}
-
-
-function applyGeneralSettings() {
-  const panelName = $("#panelName");
-  const panelVersion = $("#panelVersion");
-  const themeSelect = $("#themeSelect");
-
-  if (panelName) {
-    panelName.value = APP_STATE.panelName;
-  }
-
-  if (panelVersion) {
-    panelVersion.value = APP_STATE.panelVersion;
-  }
-
-  if (themeSelect) {
-    themeSelect.value = APP_STATE.theme;
-  }
-
-  document.body.dataset.theme = APP_STATE.theme;
-
-  const overviewName = $("#overviewPanelName");
-  const overviewVersion = $("#overviewVersion");
-
-  if (overviewName) {
-    overviewName.textContent = APP_STATE.panelName;
-  }
-
-  if (overviewVersion) {
-    overviewVersion.textContent = APP_STATE.panelVersion;
-  }
-}
-
-
-function initializeGeneralSettings() {
-  $("#saveSettings")?.addEventListener("click", () => {
-    const panelName = $("#panelName");
-    const panelVersion = $("#panelVersion");
-    const themeSelect = $("#themeSelect");
-
-    const name = panelName?.value.trim() || "";
-    const version = panelVersion?.value.trim() || "";
-
-    if (!name) {
-      showToast("Please enter a panel name.", "error");
-      panelName?.focus();
-      return;
-    }
-
-    if (!version) {
-      showToast("Please enter a panel version.", "error");
-      panelVersion?.focus();
-      return;
-    }
-
-    APP_STATE.panelName = name;
-    APP_STATE.panelVersion = version;
-    APP_STATE.theme = themeSelect?.value || "dark";
-
-    const saved = safeWrite(
-      STORAGE_KEYS.settings,
-      JSON.stringify({
-        panelName: APP_STATE.panelName,
-        panelVersion: APP_STATE.panelVersion,
-        theme: APP_STATE.theme
-      })
-    );
-
-    if (!saved) {
-      showToast(
-        "Could not save settings in this browser.",
-        "error"
+      const rangeInput = event.target.closest(
+        "[data-range-control]"
       );
 
-      return;
+      if (rangeInput) {
+        const id = rangeInput.dataset.rangeControl;
+
+        const control = RANGE_CONTROLS.find(
+          item => item.id === id
+        );
+
+        if (!control) return;
+
+        const value = clampRangeValue(
+          control,
+          Number(rangeInput.value)
+        );
+
+        APP_STATE.controlValues[id] = value;
+        rangeInput.value = value;
+
+        const output = $(
+          `[data-range-value="${id}"]`
+        );
+
+        if (output) {
+          output.textContent =
+            `${value}${control.unit}`;
+        }
+
+        saveControlStates();
+
+        addLog(
+          `${control.name} changed to ${value}${control.unit}.`,
+          "info"
+        );
+      }
+    });
+
+    document.addEventListener("input", event => {
+      const rangeInput = event.target.closest(
+        "[data-range-control]"
+      );
+
+      if (!rangeInput) return;
+
+      const id = rangeInput.dataset.rangeControl;
+
+      const control = RANGE_CONTROLS.find(
+        item => item.id === id
+      );
+
+      if (!control) return;
+
+      const value = clampRangeValue(
+        control,
+        Number(rangeInput.value)
+      );
+
+      const output = $(
+        `[data-range-value="${id}"]`
+      );
+
+      if (output) {
+        output.textContent =
+          `${value}${control.unit}`;
+      }
+    });
+  }
+
+  // ============================================
+  // SPLASH SCREEN
+  // ============================================
+
+  function initializeSplashScreen() {
+    const splash = $("#splashScreen");
+    const app = $("#app");
+    const enterButton = $("#enterApp");
+
+    function enterApplication() {
+      if (splash) {
+        splash.classList.add("hidden");
+        splash.setAttribute("aria-hidden", "true");
+      }
+
+      if (app) {
+        app.classList.add("visible");
+      }
     }
 
-    safeWrite(STORAGE_KEYS.theme, APP_STATE.theme);
+    if (enterButton) {
+      enterButton.addEventListener(
+        "click",
+        enterApplication
+      );
+    }
+
+    if (splash || app) {
+      setTimeout(enterApplication, 2200);
+    }
+  }
+
+  // ============================================
+  // KEYBOARD SUPPORT
+  // ============================================
+
+  function initializeKeyboardSupport() {
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeSidebar();
+
+        const modal = $("#modal");
+
+        if (modal) {
+          modal.classList.remove("visible", "open");
+        }
+      }
+    });
+  }
+
+  // ============================================
+  // FOOTER
+  // ============================================
+
+  function initializeFooter() {
+    const footerYear = $("#footerYear");
+
+    if (footerYear) {
+      footerYear.textContent =
+        String(new Date().getFullYear());
+    }
+  }
+
+  // ============================================
+  // INITIALIZATION
+  // ============================================
+
+  function initializeApplication() {
+    loadLogs();
+    loadControlStates();
+    loadDeveloperSettings();
+    loadGeneralSettings();
 
     applyGeneralSettings();
+    loadCustomLogo();
 
-    addLog("General settings saved");
-
-    const status = $("#settingsStatus");
-
-    if (status) {
-      status.textContent = "Settings saved successfully.";
-    }
-
-    showToast("Settings saved successfully.");
-  });
-
-  $("#themeSelect")?.addEventListener("change", () => {
-    const nextTheme = $("#themeSelect").value;
-
-    if (nextTheme !== "dark" && nextTheme !== "light") {
-      return;
-    }
-
-    APP_STATE.theme = nextTheme;
-    document.body.dataset.theme = nextTheme;
-
-    safeWrite(STORAGE_KEYS.theme, nextTheme);
-
-    addLog(`${nextTheme} theme selected`);
-  });
-}
-
-
-/* =====================================================
-   ADMIN DEMONSTRATION MODULES
-   ===================================================== */
-
-function initializeAdminModules() {
-  $$("[data-admin-action]").forEach(button => {
-    button.addEventListener("click", () => {
-      const moduleName = button.dataset.adminAction;
-
-      addLog(`${moduleName} demonstration module opened`);
-
-      showToast(`${moduleName} is a demonstration module.`);
-    });
-  });
-}
-
-
-/* =====================================================
-   CLEAR LOGS
-   ===================================================== */
-
-function initializeClearLogs() {
-  $("#clearLogs")?.addEventListener("click", () => {
-    APP_STATE.logs = [];
-
+    renderControls();
     renderLogs();
-    updateDashboardStats();
 
-    showToast("Activity logs cleared.");
-  });
-}
+    initializeNavigation();
+    initializeSidebar();
+    initializeDeveloperSettings();
+    initializeLogoUpload();
+    initializeGeneralSettings();
+    initializeAdminActions();
+    initializeClearLogs();
+    initializeDisableAll();
+    initializeControlEvents();
+    initializeSplashScreen();
+    initializeKeyboardSupport();
+    initializeFooter();
 
+    updateControlCounter();
 
-/* =====================================================
-   DASHBOARD STATS
-   ===================================================== */
+    addLog("Control panel initialized.", "success");
 
-function updateDashboardStats() {
-  const activityCount = $("#activityCount");
-
-  if (activityCount) {
-    activityCount.textContent = APP_STATE.logs.length;
+    console.info(
+      "JUNAID ABBASI — CONTROL PANEL initialized."
+    );
   }
 
-  const totalControls = $("#totalControls");
-
-  if (totalControls) {
-    totalControls.textContent = CONTROL_LIST.length;
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeApplication,
+      { once: true }
+    );
+  } else {
+    initializeApplication();
   }
 
-  const counter = $("#controlCount");
-
-  if (counter) {
-    counter.textContent = Object.values(APP_STATE.controls)
-      .filter(Boolean).length;
-  }
-}
-
-
-/* =====================================================
-   SPLASH SCREEN
-   ===================================================== */
-
-function enterApplication() {
-  const splash = $("#splashScreen");
-  const app = $("#app");
-
-  if (!splash || !app) {
-    return;
-  }
-
-  splash.classList.add("hidden");
-  app.classList.remove("app-hidden");
-
-  window.setTimeout(() => {
-    splash.setAttribute("aria-hidden", "true");
-  }, 450);
-}
-
-
-function initializeSplash() {
-  $("#enterApp")?.addEventListener("click", enterApplication);
-
-  /*
-    The splash screen is also dismissed automatically.
-    The button allows users to enter immediately.
-  */
-
-  window.setTimeout(() => {
-    enterApplication();
-  }, 2200);
-}
-
-
-/* =====================================================
-   KEYBOARD SHORTCUTS
-   ===================================================== */
-
-function initializeKeyboard() {
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      closeMobileSidebar();
-
-      if (window.innerWidth > 850) {
-        return;
-      }
-
-      if ($("#sidebar")?.classList.contains("open")) {
-        return;
-      }
-
-      showPage("dashboard");
-    }
-  });
-}
-
-
-/* =====================================================
-   APPLICATION INITIALIZATION
-   ===================================================== */
-
-function initializeApplication() {
-  /*
-    Load preferences before drawing interface components.
-  */
-
-  loadGeneralSettings();
-  loadDeveloperSettings();
-  loadControlStates();
-  loadSavedLogo();
-
-  applyGeneralSettings();
-
-  renderControls();
-  renderLogs();
-
-  initializeNavigation();
-  initializeMobileNavigation();
-
-  initializeDisableAll();
-
-  initializeDeveloperSettings();
-  initializeLogoUpload();
-
-  initializeGeneralSettings();
-  initializeAdminModules();
-
-  initializeClearLogs();
-  initializeKeyboard();
-  initializeSplash();
-
-  const footerYear = $("#footerYear");
-
-  if (footerYear) {
-    footerYear.textContent = new Date().getFullYear();
-  }
-
-  addLog("JUNAID ABBASI Panel initialized", true);
-
-  console.log(
-    "JUNAID ABBASI Control Panel initialized successfully."
-  );
-}
-
-
-/* =====================================================
-   SAVE CONTROL STATES WHEN CHANGED
-   ===================================================== */
-
-document.addEventListener("change", event => {
-  if (event.target.matches("[data-control]")) {
-    saveControlStates();
-  }
-});
-
-
-/* =====================================================
-   DOM READY
-   ===================================================== */
-
-if (document.readyState === "loading") {
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeApplication,
-    { once: true }
-  );
-
-} else {
-  initializeApplication();
-}
+})();
