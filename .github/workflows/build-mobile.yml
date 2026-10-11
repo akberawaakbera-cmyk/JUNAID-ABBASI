@@ -13,10 +13,10 @@ jobs:
 android:
 name: Build Android APK
 runs-on: ubuntu-latest
-steps:
-- name: Checkout repository
-uses: actions/checkout@v4
 
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
   - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
@@ -57,10 +57,10 @@ uses: actions/checkout@v4
 ios:
 name: Build unsigned iOS IPA
 runs-on: macos-latest
-steps:
-- name: Checkout repository
-uses: actions/checkout@v4
 
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
   - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
