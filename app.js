@@ -3,7 +3,7 @@
 
   // ============================================
   // JUNAID ABBASI — CONTROL PANEL
-  // Responsive control panel application
+  // Complete Responsive Application
   // ============================================
 
   if (window.__JUNAID_CONTROL_PANEL__) return;
@@ -24,6 +24,18 @@
     logs: "junaidAbbasiActivityLogs"
   };
 
+  const DEFAULT_SETTINGS = {
+    panelName: "JUNAID ABBASI",
+    panelVersion: "1.0.0",
+    theme: "dark"
+  };
+
+  const DEFAULT_DEVELOPER = {
+    developerMode: false,
+    debugLogging: true,
+    apiEnvironment: "development"
+  };
+
   // ============================================
   // CONTROL DEFINITIONS
   // ============================================
@@ -33,7 +45,7 @@
       id: "prefire",
       name: "Pre-Fire",
       icon: "🎯",
-      description: "Pre-Fire control setting",
+      description: "Pre-Fire preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -41,7 +53,7 @@
       id: "headshot",
       name: "Headshot",
       icon: "🎯",
-      description: "Headshot control setting",
+      description: "Headshot preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -49,7 +61,7 @@
       id: "esp-line",
       name: "ESP Line",
       icon: "📏",
-      description: "ESP line display setting",
+      description: "ESP line preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -57,7 +69,7 @@
       id: "esp-head",
       name: "ESP Head",
       icon: "👁️",
-      description: "ESP head display setting",
+      description: "ESP head preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -65,7 +77,7 @@
       id: "esp-distance",
       name: "ESP Distance",
       icon: "📐",
-      description: "Distance setting",
+      description: "Adjust the distance preference.",
       type: "range",
       min: 50,
       max: 500,
@@ -77,7 +89,7 @@
       id: "silent-headshot",
       name: "Silent Headshot",
       icon: "⚡",
-      description: "Silent Headshot control setting",
+      description: "Headshot preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -85,7 +97,7 @@
       id: "aimbot",
       name: "Aimbot",
       icon: "🎮",
-      description: "Aiming control setting",
+      description: "Aiming preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -93,7 +105,7 @@
       id: "aim-assist",
       name: "Aim Assist",
       icon: "🕹️",
-      description: "Aim Assist control setting",
+      description: "Aim assistance preference.",
       type: "toggle",
       defaultValue: false
     },
@@ -101,7 +113,7 @@
       id: "vector",
       name: "Vector",
       icon: "〽️",
-      description: "Vector control setting",
+      description: "Vector preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -109,7 +121,7 @@
       id: "sensitivity",
       name: "Sensitivity",
       icon: "🎚️",
-      description: "Sensitivity control setting",
+      description: "Sensitivity preference setting.",
       type: "toggle",
       defaultValue: false
     },
@@ -117,7 +129,7 @@
       id: "fov",
       name: "FOV",
       icon: "🔭",
-      description: "Field of view setting",
+      description: "Field of view preference.",
       type: "toggle",
       defaultValue: false
     },
@@ -125,7 +137,7 @@
       id: "headshot-rate",
       name: "Headshot Rate",
       icon: "📊",
-      description: "Headshot rate setting",
+      description: "Adjust the percentage preference.",
       type: "range",
       min: 0,
       max: 100,
@@ -144,42 +156,36 @@
   );
 
   // ============================================
-  // APPLICATION STATE
+  // STATE
   // ============================================
 
   const APP_STATE = {
     controls: {},
     controlValues: {},
     logs: [],
-    developer: {
-      developerMode: false,
-      debugLogging: false,
-      apiEnvironment: "production"
-    },
-    settings: {
-      panelName: "JUNAID ABBASI",
-      panelVersion: "1.0.0",
-      theme: "dark"
-    }
+    developer: { ...DEFAULT_DEVELOPER },
+    settings: { ...DEFAULT_SETTINGS }
   };
 
   CONTROL_LIST.forEach(control => {
     if (control.type === "toggle") {
-      APP_STATE.controls[control.id] = control.defaultValue;
+      APP_STATE.controls[control.id] =
+        control.defaultValue;
     } else {
-      APP_STATE.controlValues[control.id] = control.defaultValue;
+      APP_STATE.controlValues[control.id] =
+        control.defaultValue;
     }
   });
 
   // ============================================
-  // SAFE STORAGE
+  // STORAGE HELPERS
   // ============================================
 
   function safeRead(key, fallback = null) {
     try {
       const value = localStorage.getItem(key);
       return value === null ? fallback : value;
-    } catch (error) {
+    } catch {
       return fallback;
     }
   }
@@ -189,7 +195,7 @@
       localStorage.setItem(key, value);
       return true;
     } catch (error) {
-      console.warn("Storage write failed:", error);
+      console.warn("Unable to save local data.", error);
       return false;
     }
   }
@@ -198,8 +204,22 @@
     try {
       localStorage.removeItem(key);
       return true;
-    } catch (error) {
+    } catch {
       return false;
+    }
+  }
+
+  function readJSON(key, fallback) {
+    try {
+      const value = JSON.parse(
+        safeRead(key, JSON.stringify(fallback))
+      );
+
+      return value && typeof value === "object"
+        ? value
+        : fallback;
+    } catch {
+      return fallback;
     }
   }
 
@@ -220,32 +240,36 @@
   let toastTimer = null;
 
   function showToast(message, type = "success") {
-    let toast = $("#appToast");
+    const container = $("#toastContainer");
+
+    if (!container) {
+      console.info(message);
+      return;
+    }
+
+    let toast = $("#appToast", container);
 
     if (!toast) {
       toast = document.createElement("div");
       toast.id = "appToast";
-      toast.setAttribute("role", "status");
 
       Object.assign(toast.style, {
-        position: "fixed",
-        bottom: "24px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: "99999",
-        padding: "13px 20px",
+        position: "relative",
+        marginTop: "8px",
+        padding: "12px 18px",
         borderRadius: "12px",
-        maxWidth: "calc(100% - 32px)",
-        fontSize: "14px",
-        fontWeight: "600",
+        maxWidth: "min(420px, calc(100vw - 32px))",
+        fontSize: "13px",
+        fontWeight: "700",
+        lineHeight: "1.5",
         boxShadow: "0 8px 28px rgba(0,0,0,.25)",
         opacity: "0",
-        transition: "opacity .2s ease",
-        pointerEvents: "none",
-        textAlign: "center"
+        transform: "translateY(8px)",
+        transition: "opacity .2s ease, transform .2s ease",
+        overflowWrap: "anywhere"
       });
 
-      document.body.appendChild(toast);
+      container.appendChild(toast);
     }
 
     const backgrounds = {
@@ -258,13 +282,15 @@
     toast.textContent = message;
     toast.style.background =
       backgrounds[type] || backgrounds.info;
-    toast.style.color = "#ffffff";
+    toast.style.color = "#fff";
     toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
 
     clearTimeout(toastTimer);
 
     toastTimer = setTimeout(() => {
       toast.style.opacity = "0";
+      toast.style.transform = "translateY(8px)";
     }, 2800);
   }
 
@@ -273,38 +299,23 @@
   // ============================================
 
   function loadLogs() {
-    try {
-      const saved = JSON.parse(
-        safeRead(STORAGE.logs, "[]")
-      );
+    const saved = readJSON(STORAGE.logs, []);
 
-      if (Array.isArray(saved)) {
-        APP_STATE.logs = saved.slice(0, 100);
-      }
-    } catch (error) {
-      APP_STATE.logs = [];
-    }
+    APP_STATE.logs = Array.isArray(saved)
+      ? saved
+          .filter(item =>
+            item &&
+            typeof item.message === "string"
+          )
+          .slice(0, 100)
+      : [];
   }
 
   function saveLogs() {
-    safeWrite(
+    return safeWrite(
       STORAGE.logs,
       JSON.stringify(APP_STATE.logs.slice(0, 100))
     );
-  }
-
-  function addLog(message, type = "info") {
-    const entry = {
-      message: String(message),
-      type,
-      time: new Date().toISOString()
-    };
-
-    APP_STATE.logs.unshift(entry);
-    APP_STATE.logs = APP_STATE.logs.slice(0, 100);
-
-    saveLogs();
-    renderLogs();
   }
 
   function formatLogTime(value) {
@@ -317,212 +328,323 @@
     return date.toLocaleString();
   }
 
+  function logIcon(type) {
+    const icons = {
+      success: "✓",
+      error: "!",
+      warning: "⚠",
+      info: "●"
+    };
+
+    return icons[type] || "●";
+  }
+
+  function createLogItem(log) {
+    const item = document.createElement("div");
+    item.className = "activity-item";
+
+    const icon = document.createElement("div");
+    icon.className = "activity-icon";
+    icon.textContent = logIcon(log.type);
+
+    const content = document.createElement("div");
+    content.className = "activity-content";
+
+    const title = document.createElement("strong");
+    title.textContent = log.message;
+
+    const time = document.createElement("span");
+    time.className = "activity-time";
+    time.textContent = formatLogTime(log.time);
+
+    content.append(title, time);
+    item.append(icon, content);
+
+    return item;
+  }
+
   function renderLogs() {
-    const container = $("#activityLogs") || $("#logsList");
+    const container = $("#logsContainer");
+    const recentContainer = $("#recentLogs");
 
-    if (!container) return;
+    if (container) {
+      container.replaceChildren();
 
-    if (!APP_STATE.logs.length) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">📋</div>
-          <p>No activity available.</p>
-        </div>
-      `;
-      return;
+      if (!APP_STATE.logs.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "No activity recorded yet.";
+        container.appendChild(empty);
+      } else {
+        APP_STATE.logs.forEach(log => {
+          const row = document.createElement("div");
+          row.className = "log-item";
+
+          const icon = document.createElement("div");
+          icon.className = "log-icon";
+          icon.textContent = logIcon(log.type);
+
+          const content = document.createElement("div");
+          content.className = "log-content";
+
+          const message = document.createElement("strong");
+          message.textContent = log.message;
+
+          const time = document.createElement("span");
+          time.className = "log-time";
+          time.textContent = formatLogTime(log.time);
+
+          const type = document.createElement("span");
+          type.className = "badge";
+          type.textContent = String(log.type || "info").toUpperCase();
+
+          content.append(message, time);
+          row.append(icon, content, type);
+          container.appendChild(row);
+        });
+      }
     }
 
-    container.innerHTML = APP_STATE.logs.map(log => `
-      <div class="log-entry">
-        <span class="log-indicator log-${escapeHTML(log.type)}"></span>
-        <div class="log-entry-content">
-          <div class="log-message">
-            ${escapeHTML(log.message)}
-          </div>
-          <small class="log-time">
-            ${escapeHTML(formatLogTime(log.time))}
-          </small>
-        </div>
-      </div>
-    `).join("");
+    if (recentContainer) {
+      recentContainer.replaceChildren();
+
+      const recent = APP_STATE.logs.slice(0, 5);
+
+      if (!recent.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "No activity yet.";
+        recentContainer.appendChild(empty);
+      } else {
+        recent.forEach(log => {
+          recentContainer.appendChild(createLogItem(log));
+        });
+      }
+    }
+
+    const activityCount = $("#activityCount");
+
+    if (activityCount) {
+      activityCount.textContent = String(APP_STATE.logs.length);
+    }
+  }
+
+  function addLog(message, type = "info") {
+    APP_STATE.logs.unshift({
+      message: String(message),
+      type,
+      time: new Date().toISOString()
+    });
+
+    APP_STATE.logs = APP_STATE.logs.slice(0, 100);
+
+    saveLogs();
+    renderLogs();
+    updateControlCounter();
+  }
+
+  function clearActivityLogs() {
+    APP_STATE.logs = [];
+    saveLogs();
+    renderLogs();
+    updateControlCounter();
+
+    showToast("Activity logs cleared.", "success");
   }
 
   // ============================================
   // CONTROL STORAGE
   // ============================================
 
-  function loadControlStates() {
-    try {
-      const raw = safeRead(STORAGE.controls, "{}");
-      const saved = JSON.parse(raw);
-
-      if (!saved || typeof saved !== "object") return;
-
-      // Supports the older format, where each control
-      // was saved directly in the same object.
-      const savedToggles =
-        saved.controls && typeof saved.controls === "object"
-          ? saved.controls
-          : saved;
-
-      const savedValues =
-        saved.values && typeof saved.values === "object"
-          ? saved.values
-          : saved.__values && typeof saved.__values === "object"
-            ? saved.__values
-            : {};
-
-      TOGGLE_CONTROLS.forEach(control => {
-        if (typeof savedToggles[control.id] === "boolean") {
-          APP_STATE.controls[control.id] =
-            savedToggles[control.id];
-        }
-      });
-
-      RANGE_CONTROLS.forEach(control => {
-        const value = savedValues[control.id] ??
-          saved[control.id];
-
-        if (Number.isFinite(Number(value))) {
-          APP_STATE.controlValues[control.id] =
-            clampRangeValue(control, Number(value));
-        }
-      });
-    } catch (error) {
-      console.warn("Could not load saved controls.");
-    }
-  }
-
-  function saveControlStates() {
-    const data = {
-      controls: APP_STATE.controls,
-      values: APP_STATE.controlValues
-    };
-
-    return safeWrite(
-      STORAGE.controls,
-      JSON.stringify(data)
-    );
-  }
-
   function clampRangeValue(control, value) {
-    const numericValue = Number(value);
+    const numeric = Number(value);
 
-    if (!Number.isFinite(numericValue)) {
+    if (!Number.isFinite(numeric)) {
       return control.defaultValue;
     }
 
     const clamped = Math.min(
       control.max,
-      Math.max(control.min, numericValue)
+      Math.max(control.min, numeric)
     );
 
     const step = control.step || 1;
+
     const stepped = control.min +
       Math.round((clamped - control.min) / step) * step;
 
-    return Math.min(
-      control.max,
-      Math.max(control.min, stepped)
+    return Math.min(control.max, Math.max(control.min, stepped));
+  }
+
+  function loadControlStates() {
+    const saved = readJSON(STORAGE.controls, {});
+
+    const toggles =
+      saved.controls && typeof saved.controls === "object"
+        ? saved.controls
+        : saved;
+
+    const values =
+      saved.values && typeof saved.values === "object"
+        ? saved.values
+        : saved.__values && typeof saved.__values === "object"
+          ? saved.__values
+          : saved;
+
+    TOGGLE_CONTROLS.forEach(control => {
+      if (typeof toggles[control.id] === "boolean") {
+        APP_STATE.controls[control.id] = toggles[control.id];
+      }
+    });
+
+    RANGE_CONTROLS.forEach(control => {
+      const value = values[control.id];
+
+      if (
+        value !== undefined &&
+        value !== null &&
+        Number.isFinite(Number(value))
+      ) {
+        APP_STATE.controlValues[control.id] =
+          clampRangeValue(control, value);
+      }
+    });
+  }
+
+  function saveControlStates() {
+    return safeWrite(
+      STORAGE.controls,
+      JSON.stringify({
+        controls: APP_STATE.controls,
+        values: APP_STATE.controlValues
+      })
     );
   }
 
   // ============================================
-  // CONTROL CARD GENERATION
+  // CONTROL CARDS
   // ============================================
 
   function createControlCard(control) {
     const card = document.createElement("article");
+
     card.className = "control-card";
     card.dataset.controlCard = control.id;
 
     const isRange = control.type === "range";
 
-    const topMarkup = `
-      <div class="control-card-top">
-        <div class="control-icon">
-          ${escapeHTML(control.icon)}
-        </div>
+    const top = document.createElement("div");
+    top.className = "control-card-top";
 
-        <div class="control-card-heading">
-          <h3>${escapeHTML(control.name)}</h3>
-          <p>${escapeHTML(control.description)}</p>
-        </div>
+    const info = document.createElement("div");
+    info.className = "control-card-info";
 
-        ${
-          isRange
-            ? `<span class="control-state-badge">SETTING</span>`
-            : `
-              <span class="control-state-badge ${
-                APP_STATE.controls[control.id] ? "active" : ""
-              }" data-state-badge>
-                ${APP_STATE.controls[control.id] ? "ON" : "OFF"}
-              </span>
-            `
-        }
-      </div>
-    `;
+    const icon = document.createElement("div");
+    icon.className = "control-icon";
+    icon.textContent = control.icon;
 
-    let bodyMarkup = "";
+    const heading = document.createElement("div");
+    heading.className = "control-card-heading";
+
+    const title = document.createElement("h3");
+    title.textContent = control.name;
+
+    const description = document.createElement("p");
+    description.className = "control-description";
+    description.textContent = control.description;
+
+    heading.append(title, description);
+    info.append(icon, heading);
+    top.appendChild(info);
+
+    const badge = document.createElement("span");
+    badge.className = "control-state-badge";
+
+    if (isRange) {
+      badge.textContent = "SETTING";
+    } else {
+      badge.dataset.stateBadge = "";
+
+      const enabled = APP_STATE.controls[control.id];
+
+      badge.textContent = enabled ? "ON" : "OFF";
+      badge.classList.toggle("active", enabled);
+    }
+
+    top.appendChild(badge);
+    card.appendChild(top);
 
     if (isRange) {
       const value = APP_STATE.controlValues[control.id];
 
-      bodyMarkup = `
-        <div class="range-control">
-          <div class="range-control-header">
-            <label for="range-${escapeHTML(control.id)}">
-              ${escapeHTML(control.name)}
-            </label>
+      const range = document.createElement("div");
+      range.className = "range-control";
 
-            <output
-              class="range-value"
-              data-range-value="${escapeHTML(control.id)}"
-            >
-              ${escapeHTML(value)}${escapeHTML(control.unit)}
-            </output>
-          </div>
+      const rangeHeader = document.createElement("div");
+      rangeHeader.className = "range-control-header";
 
-          <input
-            type="range"
-            id="range-${escapeHTML(control.id)}"
-            class="control-range"
-            data-range-control="${escapeHTML(control.id)}"
-            min="${control.min}"
-            max="${control.max}"
-            step="${control.step}"
-            value="${value}"
-            aria-label="${escapeHTML(control.name)}"
-          >
+      const label = document.createElement("label");
+      label.htmlFor = `range-${control.id}`;
+      label.textContent = control.name;
 
-          <div class="range-limits">
-            <span>${control.min}${escapeHTML(control.unit)}</span>
-            <span>${control.max}${escapeHTML(control.unit)}</span>
-          </div>
-        </div>
-      `;
+      const output = document.createElement("output");
+      output.className = "range-value";
+      output.dataset.rangeValue = control.id;
+      output.textContent = `${value}${control.unit}`;
+
+      rangeHeader.append(label, output);
+
+      const input = document.createElement("input");
+      input.type = "range";
+      input.id = `range-${control.id}`;
+      input.className = "control-range";
+      input.dataset.rangeControl = control.id;
+      input.min = String(control.min);
+      input.max = String(control.max);
+      input.step = String(control.step);
+      input.value = String(value);
+      input.setAttribute("aria-label", control.name);
+
+      const limits = document.createElement("div");
+      limits.className = "range-limits";
+
+      const minimum = document.createElement("span");
+      minimum.textContent = `${control.min}${control.unit}`;
+
+      const maximum = document.createElement("span");
+      maximum.textContent = `${control.max}${control.unit}`;
+
+      limits.append(minimum, maximum);
+      range.append(rangeHeader, input, limits);
+      card.appendChild(range);
     } else {
-      bodyMarkup = `
-        <div class="control-card-footer">
-          <span class="status-label" data-status-label>
-            ${APP_STATE.controls[control.id] ? "Enabled" : "Disabled"}
-          </span>
+      const footer = document.createElement("div");
+      footer.className = "control-card-footer";
 
-          <label class="switch">
-            <input
-              type="checkbox"
-              data-control="${escapeHTML(control.id)}"
-              aria-label="${escapeHTML(control.name)}"
-              ${APP_STATE.controls[control.id] ? "checked" : ""}
-            >
+      const status = document.createElement("span");
+      status.className = "control-status";
+      status.dataset.statusLabel = "";
+      status.textContent =
+        APP_STATE.controls[control.id] ? "Enabled" : "Disabled";
 
-            <span class="switch-track"></span>
-          </label>
-        </div>
-      `;
+      const label = document.createElement("label");
+      label.className = "switch";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.dataset.control = control.id;
+      checkbox.checked = Boolean(APP_STATE.controls[control.id]);
+      checkbox.setAttribute("aria-label", control.name);
+
+      const track = document.createElement("span");
+      track.className = "switch-track";
+
+      label.append(checkbox, track);
+      footer.append(status, label);
+      card.appendChild(footer);
     }
 
-    card.innerHTML = topMarkup + bodyMarkup;
+    updateControlCardAppearance(control.id, card);
 
     return card;
   }
@@ -530,27 +652,30 @@
   function renderControls() {
     const container = $("#allControls");
 
-    if (!container) {
-      console.warn("Missing #allControls in HTML.");
-      return;
-    }
+    if (!container) return;
 
-    container.innerHTML = "";
+    const fragment = document.createDocumentFragment();
 
     CONTROL_LIST.forEach(control => {
-      container.appendChild(createControlCard(control));
+      fragment.appendChild(createControlCard(control));
     });
+
+    container.replaceChildren(fragment);
 
     updateControlCounter();
     initializeControlActions();
   }
 
-  function updateControlCardAppearance(id) {
-    const card = $(`[data-control-card="${id}"]`);
+  function updateControlCardAppearance(id, providedCard) {
+    const card = providedCard ||
+      $(`[data-control-card="${id}"]`);
 
     if (!card) return;
 
     const enabled = Boolean(APP_STATE.controls[id]);
+
+    card.classList.toggle("is-enabled", enabled);
+
     const badge = $("[data-state-badge]", card);
     const status = $("[data-status-label]", card);
     const checkbox = $("[data-control]", card);
@@ -569,7 +694,7 @@
     }
   }
 
-  function syncControlCheckboxes() {
+  function syncControlInputs() {
     TOGGLE_CONTROLS.forEach(control => {
       updateControlCardAppearance(control.id);
     });
@@ -583,58 +708,68 @@
         `[data-range-value="${control.id}"]`
       );
 
-      if (input) {
-        input.value = APP_STATE.controlValues[control.id];
-      }
+      const value = APP_STATE.controlValues[control.id];
+
+      if (input) input.value = String(value);
 
       if (output) {
-        output.textContent =
-          `${APP_STATE.controlValues[control.id]}${control.unit}`;
+        output.textContent = `${value}${control.unit}`;
       }
     });
   }
 
   function updateControlCounter() {
-    const enabledCount = TOGGLE_CONTROLS.filter(
+    const enabled = TOGGLE_CONTROLS.filter(
       control => APP_STATE.controls[control.id]
     ).length;
 
-    const totalCount = TOGGLE_CONTROLS.length;
+    const total = CONTROL_LIST.length;
+    const toggleTotal = TOGGLE_CONTROLS.length;
 
-    const activityCount = $("#activityCount");
     const totalControls = $("#totalControls");
     const controlCount = $("#controlCount");
+    const summary = $("#controlsSummary");
+    const activityCount = $("#activityCount");
+
+    if (totalControls) {
+      totalControls.textContent = String(total);
+    }
+
+    if (controlCount) {
+      controlCount.textContent = String(enabled);
+    }
+
+    if (summary) {
+      summary.textContent = `${enabled} / ${toggleTotal} enabled`;
+    }
 
     if (activityCount) {
       activityCount.textContent = String(APP_STATE.logs.length);
     }
 
-    if (totalControls) {
-      totalControls.textContent = String(totalCount);
-    }
-
-    if (controlCount) {
-      controlCount.textContent =
-        `${enabledCount}/${totalCount}`;
-    }
-
-    const enabledElements = $$("[data-enabled-controls]");
-    enabledElements.forEach(element => {
-      element.textContent = String(enabledCount);
+    $$("[data-enabled-controls]").forEach(element => {
+      element.textContent = String(enabled);
     });
   }
 
   // ============================================
-  // APPLY AND DISABLE CONTROLS
+  // CONTROL ACTIONS: APPLY / IMPORT / EXPORT
   // ============================================
 
   function applyControlSettings() {
-    saveControlStates();
-    syncControlCheckboxes();
+    const saved = saveControlStates();
+
+    syncControlInputs();
     updateControlCounter();
 
-    addLog("Control settings applied.", "success");
-    showToast("Settings applied successfully.", "success");
+    addLog("Control settings applied.", saved ? "success" : "warning");
+
+    showToast(
+      saved
+        ? "Settings saved successfully."
+        : "Settings applied, but browser storage is unavailable.",
+      saved ? "success" : "warning"
+    );
   }
 
   function disableAllControls() {
@@ -643,107 +778,29 @@
     });
 
     saveControlStates();
-    syncControlCheckboxes();
+    syncControlInputs();
     updateControlCounter();
 
     addLog("All toggle controls disabled.", "warning");
-    showToast("All controls disabled.", "info");
+    showToast("All toggle controls disabled.", "success");
   }
 
-  function initializeDisableAll() {
-    const buttons = [
-      $("#disableAll"),
-      $("#disableAllControls"),
-      $("#resetControls")
-    ].filter(Boolean);
-
-    buttons.forEach(button => {
-      button.addEventListener("click", event => {
-        event.preventDefault();
-        disableAllControls();
-      });
-    });
-  }
-
-  // ============================================
-  // IMPORT / EXPORT / APPLY TOOLBAR
-  // ============================================
-
-  function initializeControlActions() {
-    const container = $("#allControls");
-
-    if (!container) return;
-
-    if ($("#controlActionToolbar")) return;
-
-    const toolbar = document.createElement("section");
-    toolbar.id = "controlActionToolbar";
-    toolbar.className = "control-actions";
-
-    toolbar.innerHTML = `
-      <div class="control-section-note">
-        <strong>Control Settings</strong>
-        <p>Adjust your settings and save your changes.</p>
-      </div>
-
-      <div class="control-action-buttons">
-        <button
-          type="button"
-          class="btn btn-primary"
-          id="applyControlSettings"
-        >
-          Apply Settings
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-secondary"
-          id="importControlSettings"
-        >
-          Import Settings
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-secondary"
-          id="exportControlSettings"
-        >
-          Export Settings
-        </button>
-
-        <input
-          type="file"
-          id="importControlFile"
-          class="import-control-input"
-          accept=".json,application/json"
-          hidden
-        >
-      </div>
-    `;
-
-    container.insertAdjacentElement("beforebegin", toolbar);
-
-    $("#applyControlSettings", toolbar).addEventListener(
-      "click",
-      applyControlSettings
-    );
-
-    $("#importControlSettings", toolbar).addEventListener(
-      "click",
-      () => {
-        $("#importControlFile", toolbar).click();
+  function resetControlSettings() {
+    CONTROL_LIST.forEach(control => {
+      if (control.type === "toggle") {
+        APP_STATE.controls[control.id] = control.defaultValue;
+      } else {
+        APP_STATE.controlValues[control.id] =
+          control.defaultValue;
       }
-    );
+    });
 
-    $("#exportControlSettings", toolbar).addEventListener(
-      "click",
-      exportControlSettings
-    );
+    saveControlStates();
+    syncControlInputs();
+    updateControlCounter();
 
-    $("#importControlFile", toolbar).addEventListener(
-      "change",
-      handleControlImport
-    );
+    addLog("Control settings reset to defaults.", "warning");
+    showToast("Default settings restored.", "success");
   }
 
   function exportControlSettings() {
@@ -772,26 +829,25 @@
 
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-    addLog("Settings exported.", "success");
+    addLog("Settings exported to JSON.", "success");
     showToast("Settings file exported.", "success");
   }
 
   async function handleControlImport(event) {
-    const file = event.target.files &&
-      event.target.files[0];
+    const input = event.target;
+    const file = input.files && input.files[0];
 
     if (!file) return;
 
     try {
       if (file.size > 1024 * 1024) {
-        throw new Error("The selected file is too large.");
+        throw new Error("The file must be smaller than 1 MB.");
       }
 
-      const text = await file.text();
-      const data = JSON.parse(text);
+      const content = await file.text();
+      const data = JSON.parse(content);
 
-      if (!data || typeof data !== "object" ||
-          Array.isArray(data)) {
+      if (!data || typeof data !== "object" || Array.isArray(data)) {
         throw new Error("Invalid settings file.");
       }
 
@@ -807,14 +863,14 @@
             ? data.__values
             : data;
 
-      let importedCount = 0;
+      let count = 0;
 
       TOGGLE_CONTROLS.forEach(control => {
         const value = importedControls[control.id];
 
         if (typeof value === "boolean") {
           APP_STATE.controls[control.id] = value;
-          importedCount++;
+          count++;
         }
       });
 
@@ -827,32 +883,93 @@
           Number.isFinite(Number(value))
         ) {
           APP_STATE.controlValues[control.id] =
-            clampRangeValue(control, Number(value));
+            clampRangeValue(control, value);
 
-          importedCount++;
+          count++;
         }
       });
 
-      if (!importedCount) {
-        throw new Error("No recognized settings found.");
+      if (!count) {
+        throw new Error("No supported settings were found.");
       }
 
       saveControlStates();
-      syncControlCheckboxes();
+      syncControlInputs();
       updateControlCounter();
 
-      addLog("Settings imported successfully.", "success");
+      addLog(`${count} settings imported successfully.`, "success");
       showToast("Settings imported successfully.", "success");
     } catch (error) {
-      console.error(error);
       addLog("Settings import failed.", "error");
-      showToast(
-        error.message || "Unable to import settings.",
-        "error"
-      );
+      showToast(error.message || "Import failed.", "error");
     } finally {
-      event.target.value = "";
+      input.value = "";
     }
+  }
+
+  function initializeControlActions() {
+    const container = $("#allControls");
+
+    if (!container || $("#controlActionToolbar")) return;
+
+    const toolbar = document.createElement("section");
+    toolbar.id = "controlActionToolbar";
+    toolbar.className = "control-actions";
+
+    toolbar.innerHTML = `
+      <div class="control-section-note">
+        <strong>Control Settings</strong>
+        <p>Change your preferences and save them locally.</p>
+      </div>
+
+      <div class="control-action-buttons">
+        <button type="button"
+          class="primary-button"
+          id="applyControlSettings">
+          Apply Settings
+        </button>
+
+        <button type="button"
+          class="secondary-button"
+          id="importControlSettings">
+          Import Settings
+        </button>
+
+        <button type="button"
+          class="secondary-button"
+          id="exportControlSettings">
+          Export Settings
+        </button>
+
+        <input type="file"
+          id="importControlFile"
+          class="import-control-input"
+          accept=".json,application/json"
+          hidden>
+      </div>
+    `;
+
+    container.insertAdjacentElement("beforebegin", toolbar);
+
+    $("#applyControlSettings", toolbar).addEventListener(
+      "click",
+      applyControlSettings
+    );
+
+    $("#importControlSettings", toolbar).addEventListener(
+      "click",
+      () => $("#importControlFile", toolbar).click()
+    );
+
+    $("#exportControlSettings", toolbar).addEventListener(
+      "click",
+      exportControlSettings
+    );
+
+    $("#importControlFile", toolbar).addEventListener(
+      "change",
+      handleControlImport
+    );
   }
 
   // ============================================
@@ -862,15 +979,15 @@
   const PAGE_INFO = {
     dashboard: {
       title: "Dashboard",
-      description: "Your control panel overview"
+      description: "Your application overview"
     },
     controls: {
-      title: "Controls",
-      description: "Manage your control settings"
+      title: "Control Center",
+      description: "Manage your control preferences"
     },
     developer: {
       title: "Developer",
-      description: "Developer preferences"
+      description: "Developer preferences and branding"
     },
     admin: {
       title: "Admin",
@@ -878,11 +995,11 @@
     },
     logs: {
       title: "Activity Logs",
-      description: "Recent panel activity"
+      description: "Review recent panel activity"
     },
     settings: {
       title: "Settings",
-      description: "Personalize your panel"
+      description: "Personalize your application"
     }
   };
 
@@ -891,68 +1008,60 @@
       pageName = "dashboard";
     }
 
-    $$("[data-page]").forEach(page => {
-      const isActive = page.dataset.page === pageName;
+    $$(".page").forEach(page => {
+      const active = page.id === pageName;
 
-      page.classList.toggle("active", isActive);
-      page.hidden = !isActive;
+      page.classList.toggle("active", active);
+      page.hidden = !active;
     });
 
-    $$("[data-nav]").forEach(link => {
-      const isActive = link.dataset.nav === pageName;
+    $$("[data-page]").forEach(button => {
+      const active = button.dataset.page === pageName;
 
-      link.classList.toggle("active", isActive);
+      button.classList.toggle("active", active);
 
-      if (isActive) {
-        link.setAttribute("aria-current", "page");
+      if (active) {
+        button.setAttribute("aria-current", "page");
       } else {
-        link.removeAttribute("aria-current");
+        button.removeAttribute("aria-current");
       }
     });
 
+    const info = PAGE_INFO[pageName];
     const title = $("#pageTitle");
     const description = $("#pageDescription");
-    const info = PAGE_INFO[pageName];
 
     if (title) title.textContent = info.title;
-
-    if (description) {
-      description.textContent = info.description;
-    }
+    if (description) description.textContent = info.description;
 
     closeSidebar();
 
     try {
       history.replaceState(null, "", `#${pageName}`);
-    } catch (error) {
-      // Navigation still works if history is unavailable.
+    } catch {
+      // The page can still work if browser history is unavailable.
     }
 
-    if (pageName === "logs") {
-      renderLogs();
-    }
-
-    if (pageName === "controls") {
-      updateControlCounter();
-    }
+    if (pageName === "logs") renderLogs();
+    if (pageName === "controls") updateControlCounter();
   }
 
   function initializeNavigation() {
-    $$("[data-nav]").forEach(link => {
-      link.addEventListener("click", event => {
+    $$("[data-page]").forEach(button => {
+      button.addEventListener("click", event => {
         event.preventDefault();
-        navigateToPage(link.dataset.nav);
+        navigateToPage(button.dataset.page);
       });
     });
 
-    $$("[data-page-link]").forEach(link => {
-      link.addEventListener("click", event => {
+    $$("[data-go-page]").forEach(button => {
+      button.addEventListener("click", event => {
         event.preventDefault();
-        navigateToPage(link.dataset.pageLink);
+        navigateToPage(button.dataset.goPage);
       });
     });
 
-    const initialPage = location.hash.replace("#", "");
+    const initialPage = location.hash.replace(/^#/, "");
 
     navigateToPage(
       PAGE_INFO[initialPage] ? initialPage : "dashboard"
@@ -967,8 +1076,14 @@
     const sidebar = $("#sidebar");
     const overlay = $("#sidebarOverlay");
 
-    if (sidebar) sidebar.classList.add("open");
-    if (overlay) overlay.classList.add("visible");
+    if (sidebar) {
+      sidebar.classList.add("open", "is-open");
+    }
+
+    if (overlay) {
+      overlay.classList.add("active");
+      overlay.setAttribute("aria-hidden", "false");
+    }
 
     document.body.classList.add("sidebar-open");
   }
@@ -977,8 +1092,14 @@
     const sidebar = $("#sidebar");
     const overlay = $("#sidebarOverlay");
 
-    if (sidebar) sidebar.classList.remove("open");
-    if (overlay) overlay.classList.remove("visible");
+    if (sidebar) {
+      sidebar.classList.remove("open", "is-open");
+    }
+
+    if (overlay) {
+      overlay.classList.remove("active");
+      overlay.setAttribute("aria-hidden", "true");
+    }
 
     document.body.classList.remove("sidebar-open");
   }
@@ -999,6 +1120,10 @@
     if (overlay) {
       overlay.addEventListener("click", closeSidebar);
     }
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeSidebar();
+    });
   }
 
   // ============================================
@@ -1006,26 +1131,18 @@
   // ============================================
 
   function loadDeveloperSettings() {
-    try {
-      const saved = JSON.parse(
-        safeRead(STORAGE.developer, "{}")
-      );
+    const saved = readJSON(STORAGE.developer, {});
 
-      if (!saved || typeof saved !== "object") return;
-
-      APP_STATE.developer = {
-        ...APP_STATE.developer,
-        ...saved
-      };
-    } catch (error) {
-      console.warn("Developer settings could not be loaded.");
-    }
+    APP_STATE.developer = {
+      ...DEFAULT_DEVELOPER,
+      ...saved
+    };
   }
 
   function initializeDeveloperSettings() {
     const developerMode = $("#developerMode");
     const debugLogging = $("#debugLogging");
-    const apiEnvironment = $("#apiEnvironment");
+    const environment = $("#apiEnvironment");
     const saveButton = $("#saveDeveloperSettings");
 
     if (developerMode) {
@@ -1038,9 +1155,16 @@
         Boolean(APP_STATE.developer.debugLogging);
     }
 
-    if (apiEnvironment) {
-      apiEnvironment.value =
-        APP_STATE.developer.apiEnvironment || "production";
+    if (environment) {
+      const savedEnvironment =
+        APP_STATE.developer.apiEnvironment;
+
+      environment.value =
+        Array.from(environment.options).some(
+          option => option.value === savedEnvironment
+        )
+          ? savedEnvironment
+          : "development";
     }
 
     if (!saveButton) return;
@@ -1055,38 +1179,88 @@
         debugLogging: Boolean(
           debugLogging && debugLogging.checked
         ),
-        apiEnvironment: apiEnvironment
-          ? apiEnvironment.value
-          : "production"
+        apiEnvironment: environment
+          ? environment.value
+          : "development"
       };
 
-      safeWrite(
+      const saved = safeWrite(
         STORAGE.developer,
         JSON.stringify(APP_STATE.developer)
       );
 
-      addLog("Developer settings saved.", "success");
-      showToast("Developer settings saved.", "success");
+      addLog("Developer preferences saved.", saved ? "success" : "warning");
+
+      showToast(
+        saved
+          ? "Developer settings saved."
+          : "Unable to save settings in this browser.",
+        saved ? "success" : "warning"
+      );
     });
   }
 
   // ============================================
-  // LOGO UPLOAD
+  // CUSTOM LOGO
   // ============================================
 
+  const LOGO_ELEMENTS = [
+    "#splashLogo",
+    "#sidebarLogo",
+    "#profileAvatar",
+    "#developerLogoPreview"
+  ];
+
+  const DEFAULT_LOGO_TEXT = {
+    splashLogo: "JA",
+    sidebarLogo: "JA",
+    profileAvatar: "JA",
+    developerLogoPreview: "JA"
+  };
+
   function setLogoImage(source) {
-    [
-      $("#splashLogo"),
-      $("#sidebarLogo"),
-      $("#profileAvatar"),
-      $("#developerLogoPreview")
-    ].filter(Boolean).forEach(element => {
+    LOGO_ELEMENTS.forEach(selector => {
+      const element = $(selector);
+
+      if (!element) return;
+
+      element.style.backgroundImage = "none";
+      element.style.backgroundSize = "cover";
+      element.style.backgroundPosition = "center";
+      element.style.backgroundRepeat = "no-repeat";
+
       if (element.tagName === "IMG") {
         element.src = source;
-      } else {
-        element.style.backgroundImage =
-          `url("${source.replace(/"/g, "%22")}")`;
+        return;
       }
+
+      element.style.backgroundImage =
+        `url("${source.replace(/"/g, "%22")}")`;
+
+      element.textContent = "";
+      element.setAttribute("data-custom-logo", "true");
+    });
+  }
+
+  function resetLogoDisplay() {
+    LOGO_ELEMENTS.forEach(selector => {
+      const element = $(selector);
+
+      if (!element) return;
+
+      element.style.backgroundImage = "";
+      element.style.backgroundSize = "";
+      element.style.backgroundPosition = "";
+      element.style.backgroundRepeat = "";
+
+      if (element.tagName === "IMG") {
+        element.removeAttribute("src");
+      } else {
+        element.textContent =
+          DEFAULT_LOGO_TEXT[element.id] || "JA";
+      }
+
+      element.removeAttribute("data-custom-logo");
     });
   }
 
@@ -1095,6 +1269,10 @@
 
     if (saved && saved.startsWith("data:image/")) {
       setLogoImage(saved);
+
+      const status = $("#logoStatus");
+
+      if (status) status.textContent = "Custom logo is active.";
     }
   }
 
@@ -1110,13 +1288,15 @@
 
         if (!file) return;
 
-        if (!file.type.startsWith("image/")) {
-          showToast("Please select an image file.", "error");
+        if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type)) {
+          showToast("Choose a PNG, JPEG, WEBP, or GIF image.", "error");
+          upload.value = "";
           return;
         }
 
         if (file.size > 3 * 1024 * 1024) {
-          showToast("Image must be smaller than 3 MB.", "error");
+          showToast("Image size must be under 3 MB.", "error");
+          upload.value = "";
           return;
         }
 
@@ -1133,19 +1313,25 @@
             return;
           }
 
-          safeWrite(STORAGE.logo, source);
+          const saved = safeWrite(STORAGE.logo, source);
+
+          if (!saved) {
+            showToast("Unable to save the logo in this browser.", "error");
+            return;
+          }
+
           setLogoImage(source);
 
           if (status) {
-            status.textContent = "Logo updated successfully.";
+            status.textContent = "Custom logo is active.";
           }
 
-          addLog("Panel logo updated.", "success");
+          addLog("Application logo updated.", "success");
           showToast("Logo updated successfully.", "success");
         };
 
         reader.onerror = () => {
-          showToast("Unable to read this image.", "error");
+          showToast("Unable to read the selected image.", "error");
         };
 
         reader.readAsDataURL(file);
@@ -1157,116 +1343,94 @@
         event.preventDefault();
 
         safeRemove(STORAGE.logo);
+        resetLogoDisplay();
 
         if (status) {
-          status.textContent = "Default logo restored.";
+          status.textContent = "Default logo is active.";
         }
 
-        const imageElements = [
-          $("#splashLogo"),
-          $("#sidebarLogo"),
-          $("#profileAvatar"),
-          $("#developerLogoPreview")
-        ].filter(Boolean);
+        if (upload) upload.value = "";
 
-        imageElements.forEach(element => {
-          element.style.backgroundImage = "";
-
-          if (element.tagName === "IMG") {
-            element.removeAttribute("src");
-          }
-        });
-
-        addLog("Panel logo reset.", "info");
+        addLog("Application logo restored to default.", "info");
         showToast("Default logo restored.", "success");
       });
     }
   }
 
   // ============================================
-  // GENERAL SETTINGS
+  // GENERAL SETTINGS / THEME
   // ============================================
 
   function loadGeneralSettings() {
-    try {
-      const saved = JSON.parse(
-        safeRead(STORAGE.settings, "{}")
-      );
+    const saved = readJSON(STORAGE.settings, {});
 
-      if (saved && typeof saved === "object") {
-        APP_STATE.settings = {
-          ...APP_STATE.settings,
-          ...saved
-        };
-      }
-    } catch (error) {
-      console.warn("General settings could not be loaded.");
-    }
+    APP_STATE.settings = {
+      ...DEFAULT_SETTINGS,
+      ...saved
+    };
 
-    const storedTheme = safeRead(STORAGE.theme);
+    const savedTheme = safeRead(STORAGE.theme);
 
-    if (storedTheme) {
-      APP_STATE.settings.theme = storedTheme;
+    if (savedTheme === "dark" || savedTheme === "light") {
+      APP_STATE.settings.theme = savedTheme;
     }
   }
 
   function applyTheme(theme) {
-    const validThemes = ["dark", "light"];
+    const selected =
+      theme === "light" ? "light" : "dark";
 
-    const selectedTheme = validThemes.includes(theme)
-      ? theme
-      : "dark";
+    APP_STATE.settings.theme = selected;
 
-    APP_STATE.settings.theme = selectedTheme;
+    document.body.dataset.theme = selected;
+    document.body.classList.toggle(
+      "light-theme",
+      selected === "light"
+    );
 
-    document.documentElement.dataset.theme = selectedTheme;
-    document.body.dataset.theme = selectedTheme;
+    document.documentElement.dataset.theme = selected;
 
     const selector = $("#themeSelect");
 
-    if (selector) {
-      selector.value = selectedTheme;
-    }
+    if (selector) selector.value = selected;
 
-    safeWrite(STORAGE.theme, selectedTheme);
+    safeWrite(STORAGE.theme, selected);
   }
 
   function applyGeneralSettings() {
+    const name = APP_STATE.settings.panelName ||
+      DEFAULT_SETTINGS.panelName;
+
+    const version = APP_STATE.settings.panelVersion ||
+      DEFAULT_SETTINGS.panelVersion;
+
+    APP_STATE.settings.panelName = name;
+    APP_STATE.settings.panelVersion = version;
+
     const nameInput = $("#panelName");
     const versionInput = $("#panelVersion");
 
-    if (nameInput) {
-      nameInput.value = APP_STATE.settings.panelName;
-    }
-
-    if (versionInput) {
-      versionInput.value = APP_STATE.settings.panelVersion;
-    }
+    if (nameInput) nameInput.value = name;
+    if (versionInput) versionInput.value = version;
 
     const overviewName = $("#overviewPanelName");
     const overviewVersion = $("#overviewVersion");
 
-    if (overviewName) {
-      overviewName.textContent =
-        APP_STATE.settings.panelName;
+    if (overviewName) overviewName.textContent = name;
+    if (overviewVersion) overviewVersion.textContent = version;
+
+    const title = $("#pageTitle");
+
+    if (title && $("#dashboard")?.classList.contains("active")) {
+      title.textContent = "Dashboard";
     }
 
-    if (overviewVersion) {
-      overviewVersion.textContent =
-        APP_STATE.settings.panelVersion;
-    }
+    const footer = $(".app-footer");
 
-    const title = $("#sidebarPanelName");
+    if (footer) {
+      const footerName = footer.querySelector("span span");
 
-    if (title) {
-      title.textContent = APP_STATE.settings.panelName;
-    }
-
-    const versionBadge = $("#panelVersionBadge");
-
-    if (versionBadge) {
-      versionBadge.textContent =
-        APP_STATE.settings.panelVersion;
+      if (footerName) footerName.textContent = name;
     }
 
     applyTheme(APP_STATE.settings.theme);
@@ -1280,6 +1444,11 @@
     if (themeSelector) {
       themeSelector.addEventListener("change", () => {
         applyTheme(themeSelector.value);
+
+        if (status) {
+          status.textContent =
+            `${themeSelector.value === "light" ? "Light" : "Dark"} theme selected.`;
+        }
       });
     }
 
@@ -1293,18 +1462,20 @@
 
       APP_STATE.settings.panelName =
         nameInput && nameInput.value.trim()
-          ? nameInput.value.trim().slice(0, 60)
-          : "JUNAID ABBASI";
+          ? nameInput.value.trim().slice(0, 50)
+          : DEFAULT_SETTINGS.panelName;
 
       APP_STATE.settings.panelVersion =
         versionInput && versionInput.value.trim()
           ? versionInput.value.trim().slice(0, 20)
-          : "1.0.0";
+          : DEFAULT_SETTINGS.panelVersion;
 
       APP_STATE.settings.theme =
-        themeSelector ? themeSelector.value : "dark";
+        themeSelector && themeSelector.value === "light"
+          ? "light"
+          : "dark";
 
-      safeWrite(
+      const saved = safeWrite(
         STORAGE.settings,
         JSON.stringify(APP_STATE.settings)
       );
@@ -1312,12 +1483,40 @@
       applyGeneralSettings();
 
       if (status) {
-        status.textContent = "Settings saved successfully.";
+        status.textContent = saved
+          ? "Settings saved successfully."
+          : "Unable to save settings in this browser.";
       }
 
-      addLog("Panel settings saved.", "success");
-      showToast("Settings saved successfully.", "success");
+      addLog("General application settings saved.", saved ? "success" : "warning");
+
+      showToast(
+        saved
+          ? "Settings saved successfully."
+          : "Settings could not be saved.",
+        saved ? "success" : "warning"
+      );
     });
+  }
+
+  function resetGeneralSettings() {
+    APP_STATE.settings = { ...DEFAULT_SETTINGS };
+
+    safeWrite(
+      STORAGE.settings,
+      JSON.stringify(APP_STATE.settings)
+    );
+
+    applyGeneralSettings();
+
+    const status = $("#settingsStatus");
+
+    if (status) {
+      status.textContent = "Default settings restored.";
+    }
+
+    addLog("General settings restored to defaults.", "warning");
+    showToast("Default settings restored.", "success");
   }
 
   // ============================================
@@ -1331,85 +1530,62 @@
 
         const action = button.dataset.adminAction;
 
-        switch (action) {
-          case "clear-logs":
-          case "clearLogs":
-            clearActivityLogs();
-            break;
-
-          case "reset-controls":
-          case "resetControls":
-            resetControlSettings();
-            break;
-
-          case "reset-settings":
-          case "resetSettings":
-            resetGeneralSettings();
-            break;
-
-          case "refresh":
-          case "refresh-panel":
-            renderControls();
-            renderLogs();
-            updateControlCounter();
-            showToast("Panel refreshed.", "success");
-            addLog("Panel refreshed.", "info");
-            break;
-
-          default:
-            showToast("Action is not available.", "warning");
+        if (action === "clear-logs" || action === "clearLogs") {
+          clearActivityLogs();
+          return;
         }
+
+        if (action === "reset-controls" || action === "resetControls") {
+          resetControlSettings();
+          return;
+        }
+
+        if (action === "reset-settings" || action === "resetSettings") {
+          resetGeneralSettings();
+          return;
+        }
+
+        if (action === "refresh" || action === "refresh-panel") {
+          renderControls();
+          renderLogs();
+          updateControlCounter();
+
+          addLog("Application interface refreshed.", "success");
+          showToast("Panel refreshed.", "success");
+          return;
+        }
+
+        // Current HTML contains User Management and Access Control.
+        if (action === "User Management") {
+          addLog("User Management module opened.", "info");
+
+          showToast(
+            "User Management module selected.",
+            "info"
+          );
+
+          return;
+        }
+
+        if (action === "Access Control") {
+          addLog("Access Control module opened.", "info");
+
+          showToast(
+            "Access Control module selected.",
+            "info"
+          );
+
+          return;
+        }
+
+        addLog(`${action} selected.`, "info");
+        showToast(`${action} selected.`, "info");
       });
     });
   }
 
-  function clearActivityLogs() {
-    APP_STATE.logs = [];
-    saveLogs();
-    renderLogs();
-    updateControlCounter();
-
-    showToast("Activity logs cleared.", "success");
-  }
-
-  function resetControlSettings() {
-    CONTROL_LIST.forEach(control => {
-      if (control.type === "toggle") {
-        APP_STATE.controls[control.id] =
-          control.defaultValue;
-      } else {
-        APP_STATE.controlValues[control.id] =
-          control.defaultValue;
-      }
-    });
-
-    saveControlStates();
-    renderControls();
-
-    addLog("Control settings reset.", "warning");
-    showToast("Control settings reset.", "success");
-  }
-
-  function resetGeneralSettings() {
-    APP_STATE.settings = {
-      panelName: "JUNAID ABBASI",
-      panelVersion: "1.0.0",
-      theme: "dark"
-    };
-
-    safeWrite(
-      STORAGE.settings,
-      JSON.stringify(APP_STATE.settings)
-    );
-
-    applyGeneralSettings();
-
-    addLog("Panel settings reset.", "warning");
-    showToast("Panel settings reset.", "success");
-  }
-
   // ============================================
-  // CLEAR LOG BUTTON
+  // CLEAR LOGS / DISABLE ALL
   // ============================================
 
   function initializeClearLogs() {
@@ -1423,13 +1599,28 @@
     });
   }
 
+  function initializeDisableAll() {
+    const button = $("#disableAll");
+
+    if (button) {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        disableAllControls();
+      });
+    }
+  }
+
   // ============================================
-  // GLOBAL CONTROL EVENTS
+  // CONTROL EVENTS
   // ============================================
 
   function initializeControlEvents() {
     document.addEventListener("change", event => {
-      const checkbox = event.target.closest("[data-control]");
+      const target = event.target;
+
+      if (!(target instanceof Element)) return;
+
+      const checkbox = target.closest("[data-control]");
 
       if (checkbox) {
         const id = checkbox.dataset.control;
@@ -1447,18 +1638,16 @@
         );
 
         addLog(
-          `${control ? control.name : id}: ${
-            checkbox.checked ? "Enabled" : "Disabled"
-          }`,
+          `${control ? control.name : id} ${
+            checkbox.checked ? "enabled" : "disabled"
+          }.`,
           checkbox.checked ? "success" : "info"
         );
 
         return;
       }
 
-      const rangeInput = event.target.closest(
-        "[data-range-control]"
-      );
+      const rangeInput = target.closest("[data-range-control]");
 
       if (rangeInput) {
         const id = rangeInput.dataset.rangeControl;
@@ -1475,15 +1664,14 @@
         );
 
         APP_STATE.controlValues[id] = value;
-        rangeInput.value = value;
+        rangeInput.value = String(value);
 
         const output = $(
           `[data-range-value="${id}"]`
         );
 
         if (output) {
-          output.textContent =
-            `${value}${control.unit}`;
+          output.textContent = `${value}${control.unit}`;
         }
 
         saveControlStates();
@@ -1496,13 +1684,15 @@
     });
 
     document.addEventListener("input", event => {
-      const rangeInput = event.target.closest(
-        "[data-range-control]"
-      );
+      const target = event.target;
 
-      if (!rangeInput) return;
+      if (!(target instanceof Element)) return;
 
-      const id = rangeInput.dataset.rangeControl;
+      const input = target.closest("[data-range-control]");
+
+      if (!input) return;
+
+      const id = input.dataset.rangeControl;
 
       const control = RANGE_CONTROLS.find(
         item => item.id === id
@@ -1512,7 +1702,7 @@
 
       const value = clampRangeValue(
         control,
-        Number(rangeInput.value)
+        Number(input.value)
       );
 
       const output = $(
@@ -1520,8 +1710,7 @@
       );
 
       if (output) {
-        output.textContent =
-          `${value}${control.unit}`;
+        output.textContent = `${value}${control.unit}`;
       }
     });
   }
@@ -1553,7 +1742,8 @@
       );
     }
 
-    if (splash || app) {
+    // The application remains usable even without the splash.
+    if (splash) {
       setTimeout(enterApplication, 2200);
     }
   }
@@ -1566,12 +1756,6 @@
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
         closeSidebar();
-
-        const modal = $("#modal");
-
-        if (modal) {
-          modal.classList.remove("visible", "open");
-        }
       }
     });
   }
@@ -1581,11 +1765,10 @@
   // ============================================
 
   function initializeFooter() {
-    const footerYear = $("#footerYear");
+    const year = $("#footerYear");
 
-    if (footerYear) {
-      footerYear.textContent =
-        String(new Date().getFullYear());
+    if (year) {
+      year.textContent = String(new Date().getFullYear());
     }
   }
 
@@ -1636,5 +1819,4 @@
   } else {
     initializeApplication();
   }
-
 })();
