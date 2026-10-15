@@ -7,7 +7,7 @@
 (() => {
   "use strict";
 
-  if (window.__LAWANGENn_CONTROL_PANEL__) return;
+  if (window.__LAWANGEN_CONTROL_PANEL__) return;
   window.__LAWANGEN_CONTROL_PANEL__ = true;
 
   const $ = (selector, root = document) =>
