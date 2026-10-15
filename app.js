@@ -1,5 +1,5 @@
 /* =========================================================
-   JUNAID ABBASI — CONTROL PANEL
+   LAWANGEN — CONTROL PANEL
    Responsive browser interface
    Local settings, sliders, import/export and activity logs
    ========================================================= */
@@ -7,8 +7,8 @@
 (() => {
   "use strict";
 
-  if (window.__JUNAID_CONTROL_PANEL__) return;
-  window.__JUNAID_CONTROL_PANEL__ = true;
+  if (window.__LAWANGEN_CONTROL_PANEL__) return;
+  window.__LAWANGEN_CONTROL_PANEL__ = true;
 
   const $ = (selector, root = document) =>
     root.querySelector(selector);
@@ -17,12 +17,12 @@
     Array.from(root.querySelectorAll(selector));
 
   const STORAGE = {
-    controls: "junaidAbbasiControlStates",
-    developer: "junaidAbbasiDeveloperSettings",
-    logo: "junaidAbbasiCustomLogo",
-    settings: "junaidAbbasiPanelSettings",
-    theme: "junaidAbbasiTheme",
-    logs: "junaidAbbasiActivityLogs"
+    controls: "lawangenControlStates",
+    developer: "lawangenDeveloperSettings",
+    logo: "lawangenCustomLogo",
+    settings: "lawangenPanelSettings",
+    theme: "lawangenTheme",
+    logs: "lawangenActivityLogs"
   };
 
   const PAGE_INFO = {
@@ -209,7 +209,7 @@
   };
 
   const DEFAULT_SETTINGS = {
-    panelName: "JUNAID ABBASI",
+    panelName: "LAWANGEN",
     panelVersion: "1.0.0",
     theme: "dark"
   };
@@ -356,7 +356,7 @@
     updateDashboardCounters();
 
     if (developerState.debugLogging) {
-      console.info("[JUNAID CONTROL PANEL]", entry.message);
+      console.info("[LAWANGEN CONTROL PANEL]", entry.message);
     }
   }
 
@@ -786,7 +786,7 @@
 
   function exportSettings() {
     const exportData = {
-      application: "JUNAID ABBASI CONTROL PANEL",
+      application: "LAWANGEN CONTROL PANEL",
       formatVersion: 1,
       exportedAt: new Date().toISOString(),
       controls: controlState,
@@ -804,7 +804,7 @@
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = "junaid-abbasi-settings.json";
+    link.download = "lawangen-settings.json";
 
     document.body.appendChild(link);
     link.click();
@@ -1204,7 +1204,7 @@
 
     document.body.dataset.theme = generalSettings.theme;
 
-    const name = generalSettings.panelName || "JUNAID ABBASI";
+    const name = generalSettings.panelName || " LAWANGEN";
     const version = generalSettings.panelVersion || "1.0.0";
 
     const overviewName = $("#overviewPanelName");
