@@ -37,8 +37,8 @@ jobs:
           node --input-type=module -e '
           import fs from "node:fs";
           fs.writeFileSync("capacitor.config.json", JSON.stringify({
-            appId: "com.junaidabbasi.panel",
-            appName: "JUNAID ABBASI",
+            appId: "com.lawangen.panel",
+            appName: "OLD LAWANGEN",
             webDir: "www"
           }, null, 2));
           '
@@ -54,7 +54,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: JUNAID-ABBASI-APK
+          name: OLD-LAWANGEN-APK
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
 
