@@ -1,4 +1,4 @@
-name: JUNAID ABBASI Mobile Build
+name: OLD LAWANGEN Mobile Build
 
 on:
   workflow_dispatch:
